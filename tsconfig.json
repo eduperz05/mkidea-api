@@ -2,7 +2,7 @@
   "": "https://json.schemastore.org/tsconfig",
   "display": "Node 18",
   "compilerOptions": {
-    "target": "ES6",                                 
+    "target": "es2021",                                 
     "module": "CommonJS",                                
     "rootDir": "src",                                  
     "moduleResolution": "node",                       
