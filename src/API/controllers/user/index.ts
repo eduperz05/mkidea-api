@@ -2,32 +2,34 @@
 import { Request, Response } from "express";
 import { User } from "../../models/user";
 
-export const getUsers = (req: Request, res: Response) => {
-  const users = User.findAll();
-  return res.status(200).json({ users });
+export const getUsers = async(req: Request, res: Response) => {
+  const users = await User.findAll();
+  res.status(200).json({ users });
+  return;
 };
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = async(req: Request, res: Response) => {
   const { id } = req.params;
-  const user = User.findByPk(id);
-  return res.status(200).json({ user });
+  const user = await User.findByPk(id);
+  res.status(200).json({ user });
+  return;
 };
 
-export const postUser = (req: Request, res: Response) => {
-  let user = User.create({ ...req.body });
+export const postUser = async(req: Request, res: Response) => {
+  let user = await User.create({ ...req.body });
   return res.status(201).json({ user });
 };
 
-export const deleteUser = (req: Request, res: Response) => {
+export const deleteUser = async(req: Request, res: Response) => {
   const { id } = req.params;
-  const deleteUser = User.findByPk(id);
+  const deleteUser = await User.findByPk(id);
   User.destroy({ where: { id } });
   return res.status(200).json({ deleteUser });
 };
 
-export const changeUser = (req: Request, res: Response) => {
+export const changeUser = async(req: Request, res: Response) => {
   const { id } = req.params;
-  User.update({ ...req.body }, { where: { id } });
-  const updatedUser = User.findByPk(id);
+  await User.update({ ...req.body }, { where: { id } });
+  const updatedUser = await User.findByPk(id);
   return res.status(200).json({ updatedUser });
 };

@@ -5,9 +5,9 @@ import { userRouter } from "./API/routes/user/index";
 import { projectRouter } from "./API/routes/project/index";
 import { teamRouter } from "./API/routes/team/index";
 import { newsRouter } from "./API/routes/news/index";
-import connection from "./API/db/config";
 
 const app = express();
+
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(cors());
@@ -26,17 +26,13 @@ app.use((
   err: Error,
   req: express.Request,
   res: express.Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   next: express.NextFunction
 ) => {
-  res.status(500).json({ message: err.message });
-});
-
-connection.sync().then(() => {
-  console.log("Connected to database");
-}).catch((err) => {
-  console.log("Err", err);
+  if (err) {
+    res.status(500).json({ error: err.message });
+  } else {
+    next();
+  }
 });
 
 export default app;
-
