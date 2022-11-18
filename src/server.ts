@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
+import { urlencoded } from "body-parser";
 import { userRouter } from "./API/routes/user/index";
 import { projectRouter } from "./API/routes/project/index";
 import { teamRouter } from "./API/routes/team/index";
 import { newsRouter } from "./API/routes/news/index";
+import connection from "./API/db/config";
 
-const app = express().use(express.json());
-
+const app = express();
+app.use(express.json());
+app.use(urlencoded({ extended: true }));
 app.use(cors());
 
 app.get("/", (req, res) => {
@@ -19,7 +22,21 @@ app.use("/project", projectRouter);
 app.use("/team", teamRouter);
 app.use("/news", newsRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server started on port " + process.env.PORT);
+app.use((
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  next: express.NextFunction
+) => {
+  res.status(500).json({ message: err.message });
 });
+
+connection.sync().then(() => {
+  console.log("Connected to database");
+}).catch((err) => {
+  console.log("Err", err);
+});
+
+export default app;
 
