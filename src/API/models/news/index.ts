@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
+import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { User } from "../user";
 @Table({
     tableName:"news"
 })
@@ -10,25 +11,29 @@ export class News extends Model {
     allowNull: true,
     primaryKey: true
   }) 
-  id_new!: number;
+    id_new!: number;
   
+  @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: true
   })
-  id_user!: number;
+    id_user!: number;
   
+  @BelongsTo(() => User)
+    user!: User;
+
   @Column({
     type:DataType.STRING,
     allowNull: false
   })
-  title!:string;
+   title!:string;
  
   @Column({
     type:DataType.TEXT,
     allowNull: false
   })
-  description!: string;
+   description!: string;
 
   @Column({
     type:DataType.STRING,
@@ -37,5 +42,5 @@ export class News extends Model {
       isUrl: true
     }
   })
-  url!: string;
+   url!: string;
 }
