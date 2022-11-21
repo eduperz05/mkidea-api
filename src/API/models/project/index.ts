@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Table, Model, Column, DataType, ForeignKey, BelongsTo, HasOne } from "sequelize-typescript";
+import { Team } from "../team";
 import { User } from "../user";
 
 @Table({
@@ -38,8 +39,11 @@ export class Project extends Model<Project> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-    id_user!: number;
+    id_owner!: number;
 
   @BelongsTo(() => User)
     user!: User;
+  
+  @HasOne(() => Team)
+    team!: Team;
 }

@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType, ForeignKey, HasOne } from "sequelize-typescript";
+import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { Project } from "../project";
 import { User } from "../user";
 
@@ -7,22 +7,31 @@ import { User } from "../user";
 })
 
 export class Team extends Model<Team> {
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    allowNull: true,
+    primaryKey: true,
+  })
+  id_team!: number;
+
   @ForeignKey(() => Project)
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
-    primaryKey: true,
   })
   id_project!: number;
+
+  @BelongsTo(() => Project)
+  project!: Project;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
-    primaryKey: true,
   })
-  id_user!: number;
+  id_users!: number;
 
-  @HasOne(() => Project, { foreignKey: 'id_project' })
-  project: any;
+  @BelongsTo(() => User)
+    users!: User[];
 }

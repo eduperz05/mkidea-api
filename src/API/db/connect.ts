@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 export const dbConnect = async() => {
 
-  dbCheck();
+  await dbCheck();
   //alter
   await connection.sync({ force: isDev }).then(() => {
     console.log("Connected to database");
