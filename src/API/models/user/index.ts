@@ -1,5 +1,5 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
-
+import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
+import { Project } from "../project";
 @Table({
   tableName: "user",
 })
@@ -64,4 +64,7 @@ export class User extends Model<User> {
     },
   })
     role!: number;
+
+  @HasMany(() => Project)
+    projects!: Project[];
 }
