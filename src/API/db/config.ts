@@ -1,16 +1,24 @@
 import { Sequelize } from "sequelize-typescript";
 import { User } from "../models/user";
 import * as dotenv from "dotenv";
+import { Dialect } from "sequelize";
 
 dotenv.config();
 
+const DB_NAME = process.env.DB_NAME;
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_HOST = process.env.DB_HOST;
+const DB_PORT = Number(process.env.DB_PORT);
+const DB_Driver = process.env.DB_Driver as Dialect;
+
 const connection = new Sequelize({
-  dialect: "mariadb",
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWD,
-  database: process.env.DB_NAME,
+  dialect: DB_Driver,
+  host: DB_HOST,
+  port: DB_PORT	,
+  username: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
   logging: false,
   models: [User],
 });
