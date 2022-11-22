@@ -51,7 +51,7 @@ export const changeUser = async(req: Request, res: Response) => {
   const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role"];
   const isValid_userOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
   if (!isValid_userOperation) {
-    res.status(400).send({ error: "Invalid_user updates!" });
+    res.status(400).send({ error: "Invalid updates!" });
     return;
   }
 

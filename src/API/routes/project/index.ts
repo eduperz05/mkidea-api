@@ -5,6 +5,6 @@ export const projectRouter = Router();
 
 projectRouter.get("/", getProjects);
 projectRouter.get("/:id", getProject);
-projectRouter.post("/:id", postProject);
+projectRouter.post("/", postProject);
 projectRouter.delete("/:id", deleteProject);
 projectRouter.patch("/:id", changeProject);

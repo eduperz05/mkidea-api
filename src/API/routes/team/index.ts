@@ -5,6 +5,6 @@ export const teamRouter = Router();
 
 teamRouter.get("/", getTeams);
 teamRouter.get("/:id", getTeam);
-teamRouter.post("/:id", postTeam);
+teamRouter.post("/", postTeam);
 teamRouter.delete("/:id", deleteTeam);
 teamRouter.patch("/:id", changeTeam);

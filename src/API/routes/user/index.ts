@@ -5,7 +5,7 @@ export const userRouter = Router();
 
 userRouter.get("/", getUsers);
 userRouter.get("/:id", getUser);
-userRouter.post("/:id", postUser);
+userRouter.post("/", postUser);
 userRouter.delete("/:id", deleteUser);
 userRouter.patch("/:id", changeUser);
 

@@ -7,7 +7,7 @@ export const dbConnect = async() => {
 
   await dbCheck();
   //alter
-  await connection.sync({ force: isDev }).then(() => {
+  await connection.sync({ alter: isDev }).then(() => {
     console.log("Connected to database");
   }).catch((err) => {
     console.log("Err", err);
