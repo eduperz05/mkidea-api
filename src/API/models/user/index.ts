@@ -10,7 +10,7 @@ export class User extends Model<User> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
-    allowNull: true,
+    allowNull: false,
     primaryKey: true,
   })
     id_user!: number;

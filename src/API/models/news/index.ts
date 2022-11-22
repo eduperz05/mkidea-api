@@ -8,7 +8,7 @@ export class News extends Model {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
-    allowNull: true,
+    allowNull: false,
     primaryKey: true
   }) 
     id_news!: number;
@@ -16,7 +16,7 @@ export class News extends Model {
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
-    allowNull: true
+    allowNull: false
   })
     id_user!: number;
   
