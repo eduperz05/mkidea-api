@@ -1,6 +1,7 @@
 import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
 import { News } from "../news";
 import { Project } from "../project";
+import { Team } from "../team";
 @Table({
   tableName: "user",
 })
@@ -71,4 +72,7 @@ export class User extends Model<User> {
   
   @HasMany(() => News)
     news!: News[];
+
+  @HasMany(() => Team)
+    team!: Team[];  
 }
