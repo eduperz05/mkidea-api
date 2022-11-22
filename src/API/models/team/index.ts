@@ -10,7 +10,7 @@ export class Team extends Model<Team> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
-    allowNull: true,
+    allowNull: false,
     primaryKey: true,
   })
     id_team!: number;
@@ -18,19 +18,29 @@ export class Team extends Model<Team> {
   @ForeignKey(() => Project)
   @Column({
     type: DataType.INTEGER,
-    allowNull: true,
+    allowNull: false,
   })
     id_project!: number;
-
+    
   @BelongsTo(() => Project)
     project!: Project;
-
+  
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
-    allowNull: true,
+    allowNull: false,
   })
     id_users!: number;
+    
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 1,
+      max: 100
+    },
+  })
+    role!: number;
 
   @BelongsTo(() => User)
     users!: User[];
