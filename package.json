@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "prod": "ultra run build && node dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
+    "lint": "eslint --max-warnings 0 . --ext .ts,.tsx",
     "start": "ts-node src/index.ts"
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
   },
   "keywords": [],
   "author": "",

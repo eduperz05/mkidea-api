@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import { createTeam } from "../../../service/team";
 import { Team } from "../../models/team";
+import { TeamRepository } from "../../repositories/TeamRepository";
 
 export const getTeams = async(req: Request, res: Response) => {
   try {
@@ -24,7 +26,8 @@ export const getTeam = async(req: Request, res: Response) => {
 
 export const postTeam = async(req: Request, res: Response) => {
   try {
-    const team = await Team.create(req.body);
+    const teamRepository = new TeamRepository();
+    const team = await createTeam(req.body, teamRepository);
     res.status(201).json({ team });
   } catch (err) {
     res.status(400).json({ err });
