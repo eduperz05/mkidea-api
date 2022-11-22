@@ -20,7 +20,7 @@ export const getUser = async(req: Request, res: Response) => {
     res.status(200).json({ user });
     return;
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(400).json({ err });
     return;
   }
 };
