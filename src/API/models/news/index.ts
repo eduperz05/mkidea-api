@@ -1,7 +1,7 @@
 import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { User } from "../user";
 @Table({
-    tableName:"news"
+  tableName: "news"
 })
 
 export class News extends Model {
@@ -11,7 +11,7 @@ export class News extends Model {
     allowNull: true,
     primaryKey: true
   }) 
-    id_new!: number;
+    id_news!: number;
   
   @ForeignKey(() => User)
   @Column({
@@ -24,23 +24,23 @@ export class News extends Model {
     user!: User;
 
   @Column({
-    type:DataType.STRING,
+    type: DataType.STRING,
     allowNull: false
   })
-   title!:string;
+    title!: string;
  
   @Column({
-    type:DataType.TEXT,
+    type: DataType.TEXT,
     allowNull: false
   })
-   description!: string;
+    description!: string;
 
   @Column({
-    type:DataType.STRING,
+    type: DataType.STRING,
     allowNull: false,
-    validate:{
+    validate: {
       isUrl: true
     }
   })
-   url!: string;
+    url!: string;
 }
