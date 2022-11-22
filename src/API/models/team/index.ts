@@ -35,10 +35,6 @@ export class Team extends Model<Team> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    validate: {
-      min: 1,
-      max: 100
-    },
   })
     role!: number;
 
