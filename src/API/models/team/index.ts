@@ -24,7 +24,6 @@ export class Team extends Model<Team> {
     
   @BelongsTo(() => Project)
     project!: Project;
-  
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
