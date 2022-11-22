@@ -3,33 +3,64 @@ import { Request, Response } from "express";
 import { User } from "../../models/user";
 
 export const getUsers = async(req: Request, res: Response) => {
-  const users = await User.findAll();
-  res.status(200).json({ users });
+  try {
+    const users = await User.findAll();
+    res.status(200).json({ users });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
   return;
 };
 
 export const getUser = async(req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = await User.findByPk(id);
-  res.status(200).json({ user });
+  const { id_user } = req.params;
+  try {
+    const user = await User.findByPk(id_user);
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
   return;
 };
 
 export const postUser = async(req: Request, res: Response) => {
-  let user = await User.create({ ...req.body });
-  return res.status(201).json({ user });
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json({ user });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+  return;
 };
 
 export const deleteUser = async(req: Request, res: Response) => {
-  const { id } = req.params;
-  const deleteUser = await User.findByPk(id);
-  User.destroy({ where: { id } });
-  return res.status(200).json({ deleteUser });
+  const { id_user } = req.params;
+  try {
+    const deleteUser = await User.findByPk(id_user);
+    User.destroy({ where: { id_user } });
+    res.status(200).json({ deleteUser });
+    return;
+  } catch (err) {
+    res.status(400).json({ err });
+    return;
+  }
 };
 
 export const changeUser = async(req: Request, res: Response) => {
-  const { id } = req.params;
-  await User.update({ ...req.body }, { where: { id } });
-  const updatedUser = await User.findByPk(id);
-  return res.status(200).json({ updatedUser });
+  const { id_user } = req.params;
+  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role"];
+  const isValid_userOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
+  if (!isValid_userOperation) {
+    res.status(400).send({ error: "Invalid updates!" });
+    return;
+  }
+
+  try {
+    await User.update({ ...req.body }, { where: { id_user } });
+    const updatedUser = await User.findByPk(id_user);
+    res.status(200).json({ updatedUser });
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+  return;
 };

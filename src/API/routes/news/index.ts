@@ -4,7 +4,7 @@ import { getNews, getNew, postNew, deleteNew, changeNew } from "../../controller
 export const newsRouter = Router();
 
 newsRouter.get("/", getNews);
-newsRouter.get("/:id", getNew);
-newsRouter.post("/:id", postNew);
-newsRouter.delete("/:id", deleteNew);
-newsRouter.patch("/:id", changeNew);
+newsRouter.get("/:id_news", getNew);
+newsRouter.post("/", postNew);
+newsRouter.delete("/:id_news", deleteNew);
+newsRouter.patch("/:id_news", changeNew);

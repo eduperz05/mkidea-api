@@ -4,7 +4,7 @@ import { getProjects, getProject, postProject, deleteProject, changeProject } fr
 export const projectRouter = Router();
 
 projectRouter.get("/", getProjects);
-projectRouter.get("/:id", getProject);
-projectRouter.post("/:id", postProject);
-projectRouter.delete("/:id", deleteProject);
-projectRouter.patch("/:id", changeProject);
+projectRouter.get("/:id_project", getProject);
+projectRouter.post("/", postProject);
+projectRouter.delete("/:id_project", deleteProject);
+projectRouter.patch("/:id_project", changeProject);
