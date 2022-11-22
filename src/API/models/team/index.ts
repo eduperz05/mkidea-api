@@ -21,7 +21,6 @@ export class Team extends Model<Team> {
     allowNull: false,
   })
     id_project!: number;
-    
   @BelongsTo(() => Project)
     project!: Project;
   @ForeignKey(() => User)
