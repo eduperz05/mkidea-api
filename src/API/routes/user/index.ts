@@ -4,10 +4,10 @@ import { getUsers, getUser, postUser, deleteUser, changeUser } from "../../contr
 export const userRouter = Router();
 
 userRouter.get("/", getUsers);
-userRouter.get("/:id", getUser);
+userRouter.get("/:id_user", getUser);
 userRouter.post("/", postUser);
-userRouter.delete("/:id", deleteUser);
-userRouter.patch("/:id", changeUser);
+userRouter.delete("/:id_user", deleteUser);
+userRouter.patch("/:id_user", changeUser);
 
 
 // http://localhost:3000/user
