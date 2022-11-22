@@ -1,5 +1,6 @@
 
 import { Request, Response } from "express";
+import { createUser } from "../../../service/user";
 import { User } from "../../models/user";
 
 export const getUsers = async(req: Request, res: Response) => {
@@ -23,9 +24,10 @@ export const getUser = async(req: Request, res: Response) => {
   return;
 };
 
+
 export const postUser = async(req: Request, res: Response) => {
   try {
-    const user = await User.create(req.body);
+    const user = await createUser(req.body, User.create);
     res.status(201).json({ user });
   } catch (err) {
     res.status(400).json({ err });

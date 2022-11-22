@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import { User } from "../models/user";
-import { News } from "../models/news"
+import { News } from "../models/news";
 import * as dotenv from "dotenv";
 import { Project } from "../models/project";
 import { Team } from "../models/team";
