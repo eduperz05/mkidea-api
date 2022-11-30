@@ -21,8 +21,10 @@ export class Team extends Model<Team> {
     allowNull: false,
   })
     id_project!: number;
+    
   @BelongsTo(() => Project)
     project!: Project;
+
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
@@ -30,12 +32,13 @@ export class Team extends Model<Team> {
   })
     id_users!: number;
     
+  @BelongsTo(() => User)
+    users!: User[];
+      
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
     role!: number;
 
-  @BelongsTo(() => User)
-    users!: User[];
 }

@@ -1,46 +1,51 @@
 
 import { Request, Response } from "express";
-import { createUser } from "../../../service/user";
+import { findUsers, findUser, createUser, deleteUser, updateUser } from "../../../service/user";
 import { User } from "../../models/user";
+import { UserRepository } from "../../repositories/UserRepository";
 
-export const getUsers = async(req: Request, res: Response) => {
+export const getUsersController = async(req: Request, res: Response) => {
   try {
-    const users = await User.findAll();
+    const userRepository = new UserRepository();
+    const users = await findUsers(userRepository);
     res.status(200).json({ users });
-  } catch (err) {
-    res.status(400).json({ err });
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const getUser = async(req: Request, res: Response) => {
+export const getUserController = async(req: Request, res: Response) => {
   const { id_user } = req.params;
   try {
-    const user = await User.findByPk(id_user);
+    const userRepository = new UserRepository();
+    const user = await findUser({ id_user }, userRepository);
     res.status(200).json({ user });
-  } catch (err) {
-    res.status(400).json({ err });
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
 
-export const postUser = async(req: Request, res: Response) => {
+export const postUserController = async(req: Request, res: Response) => {
   try {
-    const user = await createUser(req.body, User.create);
+    const userRepository = new UserRepository();
+    const user = await createUser(req.body, userRepository);
     res.status(201).json({ user });
-  } catch (err) {
-    res.status(400).json({ err });
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const deleteUser = async(req: Request, res: Response) => {
+export const deleteUserController = async(req: Request, res: Response) => {
   const { id_user } = req.params;
   try {
-    const deleteUser = await User.findByPk(id_user);
-    User.destroy({ where: { id_user } });
-    res.status(200).json({ deleteUser });
+    const userRepository = new UserRepository();
+    const deletedUser = await findUser({ id_user }, userRepository);
+    await deleteUser({ id_user }, userRepository);
+    res.status(200).json({ deletedUser });
     return;
   } catch (err) {
     res.status(400).json({ err });
@@ -48,17 +53,11 @@ export const deleteUser = async(req: Request, res: Response) => {
   }
 };
 
-export const changeUser = async(req: Request, res: Response) => {
+export const changeUserController = async(req: Request, res: Response) => {
   const { id_user } = req.params;
-  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role"];
-  const isValid_userOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
-  if (!isValid_userOperation) {
-    res.status(400).send({ error: "Invalid updates!" });
-    return;
-  }
-
   try {
-    await User.update({ ...req.body }, { where: { id_user } });
+    const userRepository = new UserRepository();
+    await updateUser({ id_user }, req.body, userRepository);
     const updatedUser = await User.findByPk(id_user);
     res.status(200).json({ updatedUser });
   } catch (err) {

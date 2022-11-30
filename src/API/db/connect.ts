@@ -23,7 +23,7 @@ const dbCheck = async() => {
   }).then(async(conn) => {
     await conn.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`)
       .then(() => {
-        console.log("Database created");
+        console.log("Database checked");
       }).catch((err) => {
         console.log("Err", err);
       });
