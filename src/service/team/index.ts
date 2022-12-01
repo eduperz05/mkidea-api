@@ -1,8 +1,6 @@
+import { TeamRepository } from "../../API/repositories/TeamRepository";
 
-export const findTeams = async(teamRepository: any) => {
-  if (!teamRepository) {
-    throw new Error("No parameters");
-  }
+export const findTeams = async(teamRepository: TeamRepository) => {
   const teams = await teamRepository.findAll();
   if (teams.length === 0) {
     throw new Error("No teams on database, please create one before trying to find.");
@@ -10,37 +8,23 @@ export const findTeams = async(teamRepository: any) => {
   return teams;
 };
 
-export const findTeam = async(teamId: any, teamRepository: any) => {
-  if (!teamId || !teamRepository) {
-    throw new Error("No parameters");
-  }
-  const team = await teamRepository.findByPk(parseInt(teamId));
+export const findTeamByPk = async(teamId: number, teamRepository: TeamRepository) => {
+  const team = await teamRepository.findByPk(teamId);
   if (!team) {
-    throw new Error("Team not found!");
+    throw new Error("TeamId not found!");
   }
   return team;
 };
 
-export const findTeamByProject = async(projectId: any, teamRepository: any) => {
-  if (!projectId || !teamRepository) {
-    throw new Error("No parameters");
-  }
-  const teams = await teamRepository.findByValue(parseInt(projectId));
-  if (teams.length === 0) {
+export const findTeamByProject = async(projectId: number, teamRepository: TeamRepository) => {
+  const teams = await teamRepository.findByIdProject(projectId);
+  if (!teams?.length) {
     throw new Error("No users on this team.");
   }
   return teams;
 };
 
-export const createTeam = async(teamToCreate: any, teamRepository: any) => {
-  if (!teamToCreate || !teamRepository) {
-    throw new Error("No parameters");
-  }
-  if (!teamToCreate.id_project ||
-    !teamToCreate.id_user ||
-    !teamToCreate.role) {
-    throw new Error("A obligatory parameter is missing on body.");
-  }
+export const createTeam = async(teamToCreate: any, teamRepository: TeamRepository) => {
   if (await teamRepository.isUserOnTeam(teamToCreate)) {
     throw new Error("User already on team");
   }
@@ -49,21 +33,15 @@ export const createTeam = async(teamToCreate: any, teamRepository: any) => {
 
 };
 
-export const deleteTeam = async(teamId: any, teamRepository: any) => {
-  if (!teamId || !teamRepository) {
-    throw new Error("No parameters");
-  }
+export const deleteTeam = async(teamId: number, teamRepository: TeamRepository) => {
   await teamRepository.destroy(teamId);
 }; 
 
-export const updateUserOnTeam = async(teamId: any, teamToUpdate: any, teamRepository: any) => {
-  if (!teamId || !teamToUpdate || !teamRepository) {
-    throw new Error("No parameters");
-  }
+export const updateUserOnTeam = async(teamId: number, teamToUpdate: any, teamRepository: any) => {
   const allowedUpdates = ["role"];
   const isValid_teamOperation = Object.keys(teamToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_teamOperation) {
     throw new Error("Invalid update parameters.");
   }
-  await teamRepository.update(parseInt(teamId), teamToUpdate);
+  await teamRepository.update(teamId, teamToUpdate);
 };

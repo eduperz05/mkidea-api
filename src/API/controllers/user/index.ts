@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { findUsers, findUser, createUser, deleteUser, updateUser } from "../../../service/user";
-import { UserRepository } from "../../repositories/UserRepository";
+import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser } from "../../../service/user";
+import { UserRepositorySequelize } from "../../repositories/UserRepository";
 
 export const getUsersController = async(req: Request, res: Response) => {
   try {
-    const userRepository = new UserRepository();
+    const userRepository = new UserRepositorySequelize();
     const users = await findUsers(userRepository);
     res.status(200).json(users);
   } catch (err: any) {
@@ -14,10 +14,13 @@ export const getUsersController = async(req: Request, res: Response) => {
 };
 
 export const getUserController = async(req: Request, res: Response) => {
-  const { id_user } = req.params;
   try {
-    const userRepository = new UserRepository();
-    const user = await findUser(id_user, userRepository);
+    if (!req.params.id_user) {
+      res.status(400).json("No id_user parameter");
+    }
+    const { id_user } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    const user = await findUser(parseInt(id_user), userRepository);
     res.status(200).json(user);
   } catch (err: any) {
     res.status(400).json(err);
@@ -25,10 +28,30 @@ export const getUserController = async(req: Request, res: Response) => {
   return;
 };
 
+export const getUserByUsernameController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.username) {
+      res.status(400).json("No username parameter");
+    }
+    const { username } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    const user = await findUserByUsername(username, userRepository);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  return;
+};
 
 export const postUserController = async(req: Request, res: Response) => {
   try {
-    const userRepository = new UserRepository();
+    if (!req.body.username || 
+      !req.body.email || 
+      !req.body.password || 
+      !req.body.role) {
+      res.status(400).json("A obligatory parameter is missing on body.");
+    }
+    const userRepository = new UserRepositorySequelize();
     const user = await createUser(req.body, userRepository);
     res.status(201).json(user);
   } catch (err: any) {
@@ -38,11 +61,14 @@ export const postUserController = async(req: Request, res: Response) => {
 };
 
 export const deleteUserController = async(req: Request, res: Response) => {
-  const { id_user } = req.params;
   try {
-    const userRepository = new UserRepository();
-    const deletedUser = await findUser(id_user, userRepository);
-    await deleteUser(id_user, userRepository);
+    if (!req.params.id_user) {
+      res.status(400).json("No id_user parameter");
+    }
+    const { id_user } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    const deletedUser = await findUser(parseInt(id_user), userRepository);
+    await deleteUser(parseInt(id_user), userRepository);
     res.status(200).json(deletedUser);
     return;
   } catch (err) {
@@ -52,11 +78,16 @@ export const deleteUserController = async(req: Request, res: Response) => {
 };
 
 export const changeUserController = async(req: Request, res: Response) => {
-  const { id_user } = req.params;
   try {
-    const userRepository = new UserRepository();
-    await updateUser(id_user, req.body, userRepository);
-    const updatedUser = await findUser(id_user, userRepository);
+    if (!req.params.id_user) {
+      res.status(400).json("No id_user parameter");
+    } else if (Object.keys(req.body).length === 0) {
+      res.status(400).json("No body parameters");
+    }
+    const { id_user } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    await updateUser(parseInt(id_user), req.body, userRepository);
+    const updatedUser = await findUser(parseInt(id_user), userRepository);
     res.status(200).json(updatedUser);
   } catch (err) {
     res.status(400).json(err);

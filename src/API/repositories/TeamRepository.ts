@@ -1,7 +1,16 @@
 import { Team } from "../models/team";
 
+export interface TeamRepository {
+  findAll(): Promise<Team[]>;
+  findByPk(id: number): Promise<Team|null>;
+  findByIdProject(value: number): Promise<Team[]|null>;
+  create(team: any): Promise<Team>;
+  destroy(id: number): Promise<void>;
+  update(id: number, team: any): Promise<Team|null>;
+  isUserOnTeam(team: any): Promise<boolean>;
+}
 
-export class TeamRepository {
+export class TeamRepositorySequelize implements TeamRepository {
 
   public async findAll(): Promise<Team[]> {
     return Team.findAll();
@@ -11,7 +20,7 @@ export class TeamRepository {
     return Team.findByPk(id_team);
   }
   
-  public async findByValue(value: string): Promise<Team[]|null> {
+  public async findByIdProject(value: number): Promise<Team[]|null> {
     return Team.findAll({ where: { id_project: value } });
   }
 

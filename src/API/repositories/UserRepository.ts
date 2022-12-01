@@ -1,6 +1,16 @@
 import { User } from "../models/user";
 
-export class UserRepository {
+export interface UserRepository {
+  findAll(): Promise<User[]>;
+  findByPk(id: number): Promise<User|null>;
+  findByUser(value: string): Promise<User|null>;
+  create(user: any): Promise<User>;
+  destroy(id: number): Promise<void>;
+  update(id: number, user: any): Promise<User|null>;
+  usernameExists(username: string): Promise<boolean>;
+  emailExists(email: string): Promise<boolean>;
+}
+export class UserRepositorySequelize implements UserRepository {
   
   public async findAll(): Promise<User[]> {
     return User.findAll();
@@ -8,6 +18,10 @@ export class UserRepository {
   
   public async findByPk(id_user: number): Promise<User|null> {
     return User.findByPk(id_user);
+  }
+  
+  public async findByUser(value: string): Promise<User|null> {
+    return User.findOne({ where: { username: value } });
   }
   
   public async create(userToCreate: any): Promise<User> {
