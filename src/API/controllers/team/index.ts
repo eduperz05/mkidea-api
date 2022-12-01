@@ -1,67 +1,75 @@
 import { Request, Response } from "express";
-import { createTeam } from "../../../service/team";
-import { Team } from "../../models/team";
 import { TeamRepository } from "../../repositories/TeamRepository";
+import { findTeams, findTeam, findTeamByProject, createTeam, deleteTeam, updateUserOnTeam } from "../../../service/team";
 
-export const getTeams = async(req: Request, res: Response) => {
+export const getTeamsController = async(req: Request, res: Response) => {
   try {
-    const teams = await Team.findAll();
-    res.status(200).json({ teams });
+    const teamRepository = new TeamRepository();
+    const teams = await findTeams(teamRepository);
+    res.status(200).json(teams);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };
 
-export const getTeam = async(req: Request, res: Response) => {
+export const getTeamController = async(req: Request, res: Response) => {
   const { id_team } = req.params;
   try {
-    const team = await Team.findByPk(id_team);
-    res.status(200).json({ team });
+    const teamRepository = new TeamRepository();
+    const team = await findTeam(id_team, teamRepository);
+    res.status(200).json(team);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };
 
-export const postTeam = async(req: Request, res: Response) => {
+export const getTeamByProjectController = async(req: Request, res: Response) => {
+  const { id_project } = req.params;
+  try {
+    const teamRepository = new TeamRepository();
+    const teams = await findTeamByProject(id_project, teamRepository);
+    res.status(200).json(teams);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const postTeamController = async(req: Request, res: Response) => {
   try {
     const teamRepository = new TeamRepository();
     const team = await createTeam(req.body, teamRepository);
-    res.status(201).json({ team });
+    res.status(201).json(team);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };
 
-export const deleteTeam = async(req: Request, res: Response) => {
+export const deleteTeamController = async(req: Request, res: Response) => {
   const { id_team } = req.params;
   try {
-    const deleteTeam = await Team.findByPk(id_team);
-    Team.destroy({ where: { id_team } });
-    res.status(200).json({ deleteTeam });
+    const teamRepository = new TeamRepository();
+    const deleteUserOnTeam = await findTeam(id_team, teamRepository);
+    await deleteTeam(id_team, teamRepository);
+    res.status(200).json(deleteUserOnTeam);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };
 
-export const changeTeam = async(req: Request, res: Response) => {
+export const changeTeamController = async(req: Request, res: Response) => {
   const { id_team } = req.params;
-  const allowedUpdates = ["id_project", "id_users"];
-  const isValid_userOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
-  if (!isValid_userOperation) {
-    res.status(400).send({ error: "Invalid_team updates!" });
-    return;
-  }
-
   try {
-    await Team.update({ ...req.body }, { where: { id_team } });
-    const updatedTeam = await Team.findByPk(id_team);
-    res.status(200).json({ updatedTeam });
+    const teamRepository = new TeamRepository();
+    await updateUserOnTeam(id_team, req.body, teamRepository);
+    const updatedUserOnTeam = await findTeam(id_team, teamRepository);
+    res.status(200).json(updatedUserOnTeam);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };

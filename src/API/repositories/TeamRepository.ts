@@ -10,6 +10,10 @@ export class TeamRepository {
   public async findByPk(id_team: number): Promise<Team|null> {
     return Team.findByPk(id_team);
   }
+  
+  public async findByValue(value: string): Promise<Team[]|null> {
+    return Team.findAll({ where: { id_project: value } });
+  }
 
   public async create(teamToCreate: any): Promise<Team> {
     return Team.create(teamToCreate);
