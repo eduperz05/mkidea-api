@@ -1,69 +1,96 @@
 
 import { Request, Response } from "express";
-import { News } from "../../models/news";
+import { findNews, findNewsById, findNewsByTitle, createNews, deleteNews, updateNews } from "../../../service/news";
+import { NewsRepositorySequelize } from "../../repositories/NewsRepository";
 
-export const getNews = async(req: Request, res: Response) => {
+export const getNewsController = async(req: Request, res: Response) => {
   try {
-    const news = await News.findAll();
-    res.status(200).json({ news });
-  } catch (err) {
-    res.status(400).json({ err });
+    const newsRepository = new NewsRepositorySequelize();
+    const news = await findNews(newsRepository);
+    res.status(200).json(news);
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const getNew = async(req: Request, res: Response) => {
-  const { id_news } = req.params;
+export const getNewsByIdController = async(req: Request, res: Response) => {
   try {
-    const project = await News.findByPk(id_news);
-    res.status(200).json({ project });
-  } catch (err) {
-    res.status(400).json({ err });
+    if (!req.params.id_news) {
+      res.status(400).json("No id_news parameter");
+    }
+    const { id_news } = req.params;
+    const newsRepository = new NewsRepositorySequelize();
+    const news = await findNewsById(parseInt(id_news), newsRepository);
+    res.status(200).json(news);
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const postNew = async(req: Request, res: Response) => {
+export const getNewsByTitleController = async(req: Request, res: Response) => {
   try {
-    const news = await News.create(req.body);
-    res.status(201).json({ news });
-  } catch (err) {
-    res.status(400).json({ err });
+    if (!req.params.title) {
+      res.status(400).json("No title parameter");
+    }
+    const { title } = req.params;
+    const newsRepository = new NewsRepositorySequelize();
+    const news = await findNewsByTitle(title, newsRepository);
+    res.status(200).json(news);
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const deleteNew = async(req: Request, res: Response) => {
-  const { id_news } = req.params;
+export const postNewsController = async(req: Request, res: Response) => {
   try {
-    const deleteNews = await News.findByPk(id_news);
-    News.destroy({ where: { id_news } });
-    res.status(200).json({ deleteNews });
-  } catch (err) {
-    res.status(400).json({ err });
+    if (req.body.id_user ||
+      !req.body.title || 
+      !req.body.description || 
+      !req.body.url) {
+      res.status(400).json("A obligatory parameter is missing on body.");
+    }
+    const newsRepository = new NewsRepositorySequelize();
+    const news = await createNews(req.body, newsRepository);
+    res.status(201).json(news);
+  } catch (err: any) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const changeNew = async(req: Request, res: Response) => {
-  const { id_news } = req.params;
-  const allowedUpdates = 
-  ["title", 
-    "description", 
-    "url"];
-  const isValidOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
-  if (!isValidOperation) {
-    res.status(400).send({ error: "Invalid updates!" });
-    return;
-  }
-
+export const deleteNewsController = async(req: Request, res: Response) => {
   try {
-    await News.update({ ...req.body }, { where: { id_news } });
-    const updatedNews = await News.findByPk(id_news);
-    res.status(200).json({ updatedNews });
-    return;
-  } catch (err) {
-    res.status(400).json({ err });
-    return;
+    if (!req.params.id_news) {
+      res.status(400).json("No id_news parameter");
+    }
+    const { id_news } = req.params;
+    const newsRepository = new NewsRepositorySequelize();
+    const news = await findNewsById(parseInt(id_news), newsRepository);
+    await deleteNews(parseInt(id_news), newsRepository);
+    res.status(200).json(news);
+  } catch (err: any) {
+    res.status(400).json(err);
   }
+  return;
+};
+
+export const changeNewsController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_news) {
+      res.status(400).json("No id_news parameter");
+    } else if (Object.keys(req.body).length === 0) {
+      res.status(400).json("No body parameters");
+    }
+    const { id_news } = req.params;
+    const newsRepository = new NewsRepositorySequelize();
+    await updateNews(parseInt(id_news), req.body, newsRepository);
+    const updatedNews = await findNewsById(parseInt(id_news), newsRepository);
+    res.status(200).json(updatedNews);
+  } catch (err: any) {
+    res.status(400).json(err);
+  }
+  return;
 };
