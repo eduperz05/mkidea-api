@@ -1,69 +1,142 @@
-
 import { Request, Response } from "express";
-import { Project } from "../../models/project";
+import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
+import { findProjectsByStatus, findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectByName } from "../../../service/project";
 
-export const getProjects = async(req: Request, res: Response) => {
+export const getProjectsController = async(req: Request, res: Response) => {
   try {
-    const projects = await Project.findAll();
-    res.status(200).json({ projects });
+    const projectRepository = new ProjectRepositorySequelize();
+    const projects = await findProjects(projectRepository);
+    res.status(200).json(projects);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
+
   return;
 };
 
-export const getProject = async(req: Request, res: Response) => {
-  const { id_project } = req.params;
+export const getProjectController = async(req: Request, res: Response) => {
   try {
-    const project = await Project.findByPk(id_project);
+    if (!req.params.id_project){
+      res.status(400).json("No id_project parameter");
+    }
+    const { id_project } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const project = await findProject(parseInt(id_project), projectRepository);
+    res.status(200).json(project);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+
+  return;
+};
+
+export const postProjectController = async(req: Request, res: Response) => {
+  try {
+    if (!req.body.name ||
+      !req.body.description ||
+      !req.body.status ||
+      !req.body.id_owner) {
+      res.status(400).json("A obligatory parameter is missing on body.");
+    }
+    const projectRepository = new ProjectRepositorySequelize();
+    const project = await createProject(req.body, projectRepository);
+    res.status(201).json(project);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+
+  return;
+};
+
+export const deleteProjectController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_project) {
+      res.status(400).json("No id_project parameter");
+    }
+    
+    const { id_project } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const deletedProject = await findProject(parseInt(id_project), projectRepository);
+    await deleteProject(parseInt(id_project), projectRepository);
+    res.status(200).json({ deletedProject });
+
+  } catch (err) {
+    res.status(400).json({ err });
+  }
+
+  return;
+};
+
+export const updateProjectController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_project) {
+      res.status(400).json("No id_project parameter");
+    } else if (Object.keys(req.body).length === 0) {
+      res.status(400).json("No body parameters");
+    }
+    
+    const { id_project } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const project = await updateProject(parseInt(id_project), req.body, projectRepository);
     res.status(200).json({ project });
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
+  }
+
+  return;
+};
+
+export const getProjectsByStatusController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.status) {
+      res.status(400).json("No status parameter");
+    }
+    
+    const { status } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const projects = await findProjectsByStatus(status, projectRepository);
+
+    if (projects.length === 0) {
+      res.status(404).json({ message: "No projects found" });
+      return;
+    }
+    
+    res.status(200).json(projects);
+  } catch (err) {
+    res.status(400).json(err);
   }
   return;
 };
 
-export const postProject = async(req: Request, res: Response) => {
+export const getProjectsByOwnerController = async(req: Request, res: Response) => {
+  
   try {
-    const proj = await Project.create(req.body);
-    res.status(201).json({ proj });
+    if (!req.params.id_owner) {
+      res.status(400).json("No owner parameter");
+    }
+    
+    const { id_owner } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const projects = await findProjectsByOwner(parseInt(id_owner), projectRepository);
+    res.status(200).json(projects);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
 };
 
-export const deleteProject = async(req: Request, res: Response) => {
-  const { id_project } = req.params;
+export const getProjectByNameController = async(req: Request, res: Response) => {
   try {
-    const deleteProj = await Project.findByPk(id_project);
-    Project.destroy({ where: { id_project } });
-    res.status(200).json({ deleteProj });
+    if (!req.params.name) {
+      res.status(400).json("No name parameter");
+    }
+
+    const { name } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const project = await findProjectByName(name, projectRepository);
+    res.status(200).json(project);
   } catch (err) {
-    res.status(400).json({ err });
+    res.status(400).json(err);
   }
   return;
-};
-
-export const changeProject = async(req: Request, res: Response) => {
-  const { id_project } = req.params;
-  const allowedUpdates = 
-  ["name", 
-    "description", 
-    "status"];
-  const isValidOperation = Object.keys(req.body).every((update) => allowedUpdates.includes(update));
-  if (!isValidOperation) {
-    res.status(400).send({ error: "Invalid updates!" });
-    return;
-  }
-
-  try {
-    await Project.update({ ...req.body }, { where: { id_project } });
-    const updatedProj = await Project.findByPk(id_project);
-    res.status(200).json({ updatedProj });
-    return;
-  } catch (err) {
-    res.status(400).json({ err });
-    return;
-  }
 };
