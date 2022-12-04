@@ -41,19 +41,19 @@ const user = {
 };
 
 describe("findUsers", () => {
-  it("should return an empty array", async() => {
+  it("should return an empty array", async () => {
     const userRepository = new UserRepositoryMock();
     userRepository.findAll = jest.fn().mockReturnValue([]);
     await expect(findUsers(userRepository, false)).rejects.toThrowError("No users on database, please create one before trying to find.");
   });
 
-  it("should return an array of unfiltered users", async() => {
+  it("should return an array of unfiltered users", async () => {
     const userRepository = new UserRepositoryMock();
     userRepository.findAll = jest.fn().mockReturnValue([user]);
     await expect(findUsers(userRepository, false)).resolves.toEqual([user]);
   });
 
-  it("should return an array of filtered users", async() => {
+  it("should return an array of filtered users", async () => {
     const userRepository = new UserRepositoryMock();
     userRepository.findAll = jest.fn().mockReturnValue([user]);
     await expect(findUsers(userRepository, true)).resolves.toEqual([user]);
@@ -62,19 +62,19 @@ describe("findUsers", () => {
 
 describe("createUser", () => {
 
-  it("User already exists.", async() => {
+  it("User already exists.", async () => {
     const userRepository = new UserRepositoryMock();
     userRepository.usernameExists = jest.fn().mockReturnValue(true);
     await expect(createUser(user, userRepository)).rejects.toThrowError("The username already exists.");
   });
 
-  it("User already exists.", async() => {
+  it("User already exists.", async () => {
     const userRepository = new UserRepositoryMock();
     userRepository.emailExists = jest.fn().mockReturnValue(true);
     await expect(createUser(user, userRepository)).rejects.toThrowError("The email already exists.");
   });
 
-  it("User created.", async() => {
+  it("User created.", async () => {
     const userRepository = new UserRepositoryMock();
     const result = await createUser(user, userRepository);
     expect(result).toEqual(user);
