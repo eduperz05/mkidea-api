@@ -3,7 +3,7 @@ import { createConnection } from "mariadb";
 
 const isDev = process.env.NODE_ENV === "development";
 const modeDB = process.env.MODE_DB === "alter" 
-  ? { alter: isDev } : process.env.MODE_DB === "alter" 
+  ? { alter: isDev } : process.env.MODE_DB === "force" 
     ? { force: isDev } : {};
 
 export const dbConnect = async() => {
