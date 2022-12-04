@@ -6,7 +6,7 @@ import { findTeams, findTeamByPk, findTeamByProject, createTeam, deleteTeam, upd
 export const getTeamsController = async(req: Request, res: Response) => {
   try {
     const teamRepository = new TeamRepositorySequelize();
-    const teams = await findTeams(teamRepository);
+    const teams = await findTeams(teamRepository, false);
     res.status(200).json(teams);
   } catch (err) {
     res.status(400).json(err);
@@ -21,7 +21,33 @@ export const getTeamController = async(req: Request, res: Response) => {
     }
     const { id_team } = req.params;
     const teamRepository = new TeamRepositorySequelize();
-    const team = await findTeamByPk(parseInt(id_team), teamRepository);
+    const team = await findTeamByPk(parseInt(id_team), teamRepository, false);
+    res.status(200).json(team);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const getTeamsPublicController = async(req: Request, res: Response) => {
+  try {
+    const teamRepository = new TeamRepositorySequelize();
+    const teams = await findTeams(teamRepository, true);
+    res.status(200).json(teams);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const getTeamPublicController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_team) {
+      res.status(400).json("No id_team parameter");
+    }
+    const { id_team } = req.params;
+    const teamRepository = new TeamRepositorySequelize();
+    const team = await findTeamByPk(parseInt(id_team), teamRepository, true);
     res.status(200).json(team);
   } catch (err) {
     res.status(400).json(err);
@@ -47,7 +73,7 @@ export const getTeamByProjectController = async(req: Request, res: Response) => 
 export const postTeamController = async(req: Request, res: Response) => {
   try {
     if (!req.body.id_project ||
-      !req.body.id_user ||
+      !req.body.id_users ||
       !req.body.role) {
       res.status(400).json("A obligatory parameter is missing on body.");
     }
@@ -67,7 +93,7 @@ export const deleteTeamController = async(req: Request, res: Response) => {
     }
     const { id_team } = req.params;
     const teamRepository = new TeamRepositorySequelize();
-    const deleteUserOnTeam = await findTeamByPk(parseInt(id_team), teamRepository);
+    const deleteUserOnTeam = await findTeamByPk(parseInt(id_team), teamRepository, false);
     await deleteTeam(parseInt(id_team), teamRepository);
     res.status(200).json(deleteUserOnTeam);
   } catch (err) {
@@ -86,7 +112,7 @@ export const changeTeamController = async(req: Request, res: Response) => {
     const id_team = parseInt(req.params.id_team);
     const teamRepository = new TeamRepositorySequelize();
     await updateUserOnTeam(id_team, req.body, teamRepository);
-    const updatedUserOnTeam = await findTeamByPk(id_team, teamRepository);
+    const updatedUserOnTeam = await findTeamByPk(id_team, teamRepository, false);
     res.status(200).json(updatedUserOnTeam);
   } catch (err) {
     res.status(400).json(err);

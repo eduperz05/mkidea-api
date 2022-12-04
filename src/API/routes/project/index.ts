@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { getProjectsController, getProjectController, postProjectController, deleteProjectController, updateProjectController, getProjectsByOwnerController, getProjectByNameController, getProjectsByStatusController } from "../../controllers/project";
+import { getProjectsController, getProjectController, getProjectsPublicController, getProjectPublicController,postProjectController, deleteProjectController, updateProjectController, getProjectsByOwnerController, getProjectByNameController, getProjectsByStatusController } from "../../controllers/project";
 
 export const projectRouter = Router();
 
 projectRouter.get("/", getProjectsController); // bien
+projectRouter.get("/public", getProjectsPublicController); // bien
 projectRouter.get("/:id_project", getProjectController); // bien
+projectRouter.get("/public/:id_project", getProjectPublicController); // bien
 projectRouter.get("/owner/:id_owner", getProjectsByOwnerController); // bien
 projectRouter.get("/name/:name", getProjectByNameController); // null ?
 projectRouter.get("/status/:status", getProjectsByStatusController); // bien

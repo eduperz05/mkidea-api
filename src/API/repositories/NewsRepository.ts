@@ -41,9 +41,9 @@ export class NewsRepositorySequelize implements NewsRepository {
     const title = newsToCreate.title;
     const sameTitle = await News.findAll({ where: { title: title } });
     if (sameTitle.length === 0) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   }
 }

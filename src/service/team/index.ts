@@ -1,19 +1,30 @@
 import { TeamRepository } from "../../API/repositories/TeamRepository";
+import { filterModel } from "../../utils/filterModels";
+import { filterFieldsTeam } from "../../config/filterFields";
 
-export const findTeams = async(teamRepository: TeamRepository) => {
+
+export const findTeams = async(teamRepository: TeamRepository, filter: boolean) => {
   const teams = await teamRepository.findAll();
   if (teams.length === 0) {
     throw new Error("No teams on database, please create one before trying to find.");
   }
-  return teams;
+  let teamsJsoned = teams.map((team) => team.toJSON());
+  if (filter) {
+    teamsJsoned = teamsJsoned.map((team) => team = filterModel(team, filterFieldsTeam));
+  }
+  return teamsJsoned;
 };
 
-export const findTeamByPk = async(teamId: number, teamRepository: TeamRepository) => {
+export const findTeamByPk = async(teamId: number, teamRepository: TeamRepository, filter: boolean) => {
   const team = await teamRepository.findByPk(teamId);
   if (!team) {
     throw new Error("TeamId not found!");
   }
-  return team;
+  let teamJsoned = team.toJSON();
+  if (filter) {
+    teamJsoned = filterModel(teamJsoned, filterFieldsTeam);
+  }
+  return teamJsoned;
 };
 
 export const findTeamByProject = async(projectId: number, teamRepository: TeamRepository) => {

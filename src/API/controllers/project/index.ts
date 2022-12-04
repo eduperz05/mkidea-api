@@ -5,7 +5,7 @@ import { findProjectsByStatus, findProjects, findProject, createProject, deleteP
 export const getProjectsController = async(req: Request, res: Response) => {
   try {
     const projectRepository = new ProjectRepositorySequelize();
-    const projects = await findProjects(projectRepository);
+    const projects = await findProjects(projectRepository, false);
     res.status(200).json(projects);
   } catch (err) {
     res.status(400).json(err);
@@ -21,7 +21,35 @@ export const getProjectController = async(req: Request, res: Response) => {
     }
     const { id_project } = req.params;
     const projectRepository = new ProjectRepositorySequelize();
-    const project = await findProject(parseInt(id_project), projectRepository);
+    const project = await findProject(parseInt(id_project), projectRepository, false);
+    res.status(200).json(project);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+
+  return;
+};
+
+export const getProjectsPublicController = async(req: Request, res: Response) => {
+  try {
+    const projectRepository = new ProjectRepositorySequelize();
+    const projects = await findProjects(projectRepository, true);
+    res.status(200).json(projects);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+
+  return;
+};
+
+export const getProjectPublicController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_project){
+      res.status(400).json("No id_project parameter");
+    }
+    const { id_project } = req.params;
+    const projectRepository = new ProjectRepositorySequelize();
+    const project = await findProject(parseInt(id_project), projectRepository, true);
     res.status(200).json(project);
   } catch (err) {
     res.status(400).json(err);
@@ -56,14 +84,12 @@ export const deleteProjectController = async(req: Request, res: Response) => {
     
     const { id_project } = req.params;
     const projectRepository = new ProjectRepositorySequelize();
-    const deletedProject = await findProject(parseInt(id_project), projectRepository);
+    const deletedProject = await findProject(parseInt(id_project), projectRepository, false);
     await deleteProject(parseInt(id_project), projectRepository);
     res.status(200).json({ deletedProject });
-
   } catch (err) {
     res.status(400).json({ err });
   }
-
   return;
 };
 
@@ -77,12 +103,12 @@ export const updateProjectController = async(req: Request, res: Response) => {
     
     const { id_project } = req.params;
     const projectRepository = new ProjectRepositorySequelize();
-    const project = await updateProject(parseInt(id_project), req.body, projectRepository);
-    res.status(200).json(project);
+    await updateProject(parseInt(id_project), req.body, projectRepository);
+    const updatedProject = await findProject(parseInt(id_project), projectRepository, false);
+    res.status(200).json(updatedProject);
   } catch (err) {
     res.status(400).json(err);
   }
-
   return;
 };
 

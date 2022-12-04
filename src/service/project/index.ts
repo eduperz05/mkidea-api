@@ -1,6 +1,8 @@
 import { ProjectRepository } from "../../API/repositories/ProjectRepository";
+import { filterModel } from "../../utils/filterModels";
+import { filterFieldsProject } from "../../config/filterFields";
 
-export const findProjects = async(projectRepository: ProjectRepository) => {
+export const findProjects = async(projectRepository: ProjectRepository, filter: boolean) => {
   if (!projectRepository){
     throw new Error("No parameters");
   }
@@ -9,10 +11,14 @@ export const findProjects = async(projectRepository: ProjectRepository) => {
   if (projects.length === 0){
     throw new Error("No projects on database, please create one before trying to find.");
   }
-  return projects;
+  let projectsJsoned = projects.map((project) => project.toJSON());
+  if (filter) {
+    projectsJsoned = projectsJsoned.map((project) => project = filterModel(project, filterFieldsProject));
+  }
+  return projectsJsoned;
 };
 
-export const findProject = async(projectId: number, projectRepository: ProjectRepository) =>{
+export const findProject = async(projectId: number, projectRepository: ProjectRepository, filter: boolean) =>{
   if (!projectId){
     throw new Error("No parameters");
   }
@@ -22,7 +28,11 @@ export const findProject = async(projectId: number, projectRepository: ProjectRe
   if (!project){
     throw new Error("Project not found!");
   }
-  return project;
+  let projectJsoned = project.toJSON();
+  if (filter) {
+    projectJsoned = filterModel(projectJsoned, filterFieldsProject);
+  }
+  return projectJsoned;
 }; 
 
 export const createProject = async(projectToCreate: any, projectRepository: ProjectRepository) => {

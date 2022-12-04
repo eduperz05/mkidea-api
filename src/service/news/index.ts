@@ -1,19 +1,29 @@
 import { NewsRepository } from "../../API/repositories/NewsRepository";
+import { filterModel } from "../../utils/filterModels";
+import { filterFieldsNews } from "../../config/filterFields";
 
-export const findNews = async(newsRepository: NewsRepository) => {
+export const findNews = async(newsRepository: NewsRepository, filter: boolean) => {
   const news = await newsRepository.findAll();
   if (news.length === 0) {
     throw new Error("No news on database, please create one before trying to find.");
   }
-  return news;
+  let newsJsoned = news.map((news) => news.toJSON());
+  if (filter) {
+    newsJsoned = newsJsoned.map((news) => news = filterModel(news, filterFieldsNews));
+  }
+  return newsJsoned;
 };
 
-export const findNewsById = async(id_news: number, newsRepository: NewsRepository) => {
+export const findNewsById = async(id_news: number, newsRepository: NewsRepository, filter: boolean) => {
   const news = await newsRepository.findByPk(id_news);
   if (!news) {
     throw new Error("News not found!");
   }
-  return news;
+  let newsJsoned = news.toJSON();
+  if (filter) {
+    newsJsoned = filterModel(newsJsoned, filterFieldsNews);
+  }
+  return newsJsoned;
 };
 
 export const findNewsByTitle = async(title: string, newsRepository: NewsRepository) => {
