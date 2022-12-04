@@ -1,10 +1,20 @@
 import { Router } from "express";
-import { getTeams, getTeam, postTeam, deleteTeam, changeTeam } from "../../controllers/team";
+import { getTeamsController,  
+  getTeamController, 
+  getTeamsPublicController,  
+  getTeamPublicController, 
+  getTeamByProjectController,
+  postTeamController,
+  deleteTeamController, 
+  changeTeamController } from "../../controllers/team";
 
 export const teamRouter = Router();
 
-teamRouter.get("/", getTeams);
-teamRouter.get("/:id_team", getTeam);
-teamRouter.post("/", postTeam);
-teamRouter.delete("/:id_team", deleteTeam);
-teamRouter.patch("/:id_team", changeTeam);
+teamRouter.get("/", getTeamsController);
+teamRouter.get("/public", getTeamsPublicController);
+teamRouter.get("/:id_team", getTeamController);
+teamRouter.get("/public/:id_team", getTeamPublicController);
+teamRouter.get("/projectId/:id_project", getTeamByProjectController);
+teamRouter.post("/", postTeamController);
+teamRouter.delete("/:id_team", deleteTeamController);
+teamRouter.patch("/:id_team", changeTeamController);

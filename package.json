@@ -4,11 +4,18 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "prod": "ultra run build && node dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
+    "lint": "eslint --max-warnings 0 . --ext .ts,.tsx",
     "start": "ts-node src/index.ts"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
   },
   "keywords": [],
   "author": "",
@@ -41,6 +48,9 @@
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
     "typescript": "^4.1.6",
-    "@types/validator": "13.7.10"
+    "@types/validator": "13.7.10",
+    "jest": "29.3.1",
+    "@types/jest": "29.2.3",
+    "ts-jest": "29.0.3"
   }
 }
