@@ -50,10 +50,7 @@ export const updateProject = async(projectId: any, projectToUpdate: any, project
     throw new Error("Invalid updates!");
   }
 
-  await projectRepository.update({ ...projectToUpdate }, { where: { id_project: projectId } });
-  const updatedProject = await projectRepository.findByPk(projectId);
-  return updatedProject;
-
+  await projectRepository.update(projectId, projectToUpdate);
 };
 
 export const findProjectsByOwner = async(ownerId: number, projectRepository: ProjectRepository) => { 

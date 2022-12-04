@@ -78,7 +78,7 @@ export const updateProjectController = async(req: Request, res: Response) => {
     const { id_project } = req.params;
     const projectRepository = new ProjectRepositorySequelize();
     const project = await updateProject(parseInt(id_project), req.body, projectRepository);
-    res.status(200).json({ project });
+    res.status(200).json(project);
   } catch (err) {
     res.status(400).json(err);
   }

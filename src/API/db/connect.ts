@@ -2,12 +2,14 @@ import connection from "./config";
 import { createConnection } from "mariadb";
 
 const isDev = process.env.NODE_ENV === "development";
+const modeDB = process.env.MODE_DB === "alter" 
+  ? { alter: isDev } : process.env.MODE_DB === "alter" 
+    ? { force: isDev } : {};
 
 export const dbConnect = async() => {
-
   await dbCheck();
   //alter
-  await connection.sync({ alter: isDev }).then(() => {
+  await connection.sync(modeDB).then(() => {
     console.log("Connected to database");
   }).catch((err) => {
     console.log("Err", err);

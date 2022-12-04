@@ -56,9 +56,9 @@ export class UserRepositorySequelize implements UserRepository {
     const email = userToCreate.email;
     const sameEmail = await User.findAll({ where: { email: email } });
     if (sameEmail.length === 0) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   }
 }

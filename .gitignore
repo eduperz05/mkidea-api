@@ -4,6 +4,11 @@ node_modules
 .DS_Store
 .vscode
 
+# UltraEdit
+*.uex
+*.uex~*
+*ultra-dirs*
+
 # Logs
 logs
 *.log

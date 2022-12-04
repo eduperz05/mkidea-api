@@ -1,19 +1,29 @@
 import { UserRepository } from "../../API/repositories/UserRepository";
+import { filterModel } from "../../utils/filterModels";
+import { filterFieldsUser } from "../../config/filterFields";
 
-export const findUsers = async(userRepository: UserRepository) => {
+export const findUsers = async(userRepository: UserRepository, filter: boolean) => {
   const users = await userRepository.findAll();
   if (users.length === 0) {
     throw new Error("No users on database, please create one before trying to find.");
   }
-  return users;
+  let usersJsoned = users.map((user) => user.toJSON());
+  if (filter) {
+    usersJsoned = usersJsoned.map((user) => user = filterModel(user, filterFieldsUser));
+  }
+  return usersJsoned;
 };
 
-export const findUser = async(userId: number, userRepository: UserRepository) => {
+export const findUser = async(userId: number, userRepository: UserRepository, filter: boolean) => {
   const user = await userRepository.findByPk(userId);
   if (!user) {
     throw new Error("User not found!");
   }
-  return user;
+  let userJsoned = user.toJSON();
+  if (filter) {
+    userJsoned = filterModel(userJsoned, filterFieldsUser);
+  }
+  return userJsoned;
 };
 
 export const findUserByUsername = async(username: string, userRepository: UserRepository) => {
@@ -55,3 +65,5 @@ export const updateUser = async(userId: number, userToUpdate: any, userRepositor
   }
   await userRepository.update(userId, userToUpdate);
 };
+
+

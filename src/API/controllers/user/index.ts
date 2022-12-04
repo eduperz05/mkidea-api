@@ -2,10 +2,23 @@ import { Request, Response } from "express";
 import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 
+// TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
+
 export const getUsersController = async(req: Request, res: Response) => {
   try {
     const userRepository = new UserRepositorySequelize();
-    const users = await findUsers(userRepository);
+    const users = await findUsers(userRepository, false);
+    res.status(200).json(users);
+  } catch (err: any) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const getUsersPublicController = async(req: Request, res: Response) => {
+  try {
+    const userRepository = new UserRepositorySequelize();
+    const users = await findUsers(userRepository, true);
     res.status(200).json(users);
   } catch (err: any) {
     res.status(400).json(err);
@@ -20,7 +33,22 @@ export const getUserController = async(req: Request, res: Response) => {
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
-    const user = await findUser(parseInt(id_user), userRepository);
+    const user = await findUser(parseInt(id_user), userRepository, false);
+    res.status(200).json(user);
+  } catch (err: any) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const getUserPublicController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.id_user) {
+      res.status(400).json("No id_user parameter");
+    }
+    const { id_user } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    const user = await findUser(parseInt(id_user), userRepository, true);
     res.status(200).json(user);
   } catch (err: any) {
     res.status(400).json(err);
@@ -82,7 +110,7 @@ export const deleteUserController = async(req: Request, res: Response) => {
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
-    const deletedUser = await findUser(parseInt(id_user), userRepository);
+    const deletedUser = await findUser(parseInt(id_user), userRepository, false);
     await deleteUser(parseInt(id_user), userRepository);
     res.status(200).json(deletedUser);
     return;
@@ -102,7 +130,7 @@ export const changeUserController = async(req: Request, res: Response) => {
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
     await updateUser(parseInt(id_user), req.body, userRepository);
-    const updatedUser = await findUser(parseInt(id_user), userRepository);
+    const updatedUser = await findUser(parseInt(id_user), userRepository, false);
     res.status(200).json(updatedUser);
   } catch (err) {
     res.status(400).json(err);
