@@ -4,6 +4,7 @@ export interface UserRepository {
   findAll(): Promise<User[]>;
   findByPk(id: number): Promise<User|null>;
   findByUser(value: string): Promise<User|null>;
+  findByEmail(value: string): Promise<User|null>;
   create(user: any): Promise<User>;
   destroy(id: number): Promise<void>;
   update(id: number, user: any): Promise<User|null>;
@@ -22,6 +23,10 @@ export class UserRepositorySequelize implements UserRepository {
   
   public async findByUser(value: string): Promise<User|null> {
     return User.findOne({ where: { username: value } });
+  }
+
+  public async findByEmail(value: string): Promise<User|null> {
+    return User.findOne({ where: { email: value } });
   }
   
   public async create(userToCreate: any): Promise<User> {

@@ -24,6 +24,14 @@ export const findUserByUsername = async(username: string, userRepository: UserRe
   return user; 
 };
 
+export const findUserByEmail = async(email: string, userRepository: UserRepository) => {
+  const user = await userRepository.findByEmail(email);
+  if (!user) {
+    throw new Error("User not found!");
+  }
+  return user; 
+};
+
 export const createUser = async(userToCreate: any, UserRepository: UserRepository) => {
   if (await UserRepository.usernameExists(userToCreate)) {
     throw new Error("The username already exists.");

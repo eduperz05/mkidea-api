@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser } from "../../../service/user";
+import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 
 export const getUsersController = async(req: Request, res: Response) => {
@@ -36,6 +36,21 @@ export const getUserByUsernameController = async(req: Request, res: Response) =>
     const { username } = req.params;
     const userRepository = new UserRepositorySequelize();
     const user = await findUserByUsername(username, userRepository);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  return;
+};
+
+export const getUserByEmailController = async(req: Request, res: Response) => {
+  try {
+    if (!req.params.email) {
+      res.status(400).json("No email parameter");
+    }
+    const { email } = req.params;
+    const userRepository = new UserRepositorySequelize();
+    const user = await findUserByEmail(email, userRepository);
     res.status(200).json(user);
   } catch (err) {
     res.status(400).json(err);
