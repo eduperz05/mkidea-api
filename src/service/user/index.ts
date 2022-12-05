@@ -17,7 +17,7 @@ export const findUsers = async(userRepository: UserRepository, filter: boolean) 
 export const findUser = async(userId: number, userRepository: UserRepository, filter: boolean) => {
   const user = await userRepository.findByPk(userId);
   if (!user) {
-    throw new Error("User not found!");
+    throw new Error("User not found.");
   }
   let userJsoned = user.toJSON();
   if (filter) {
@@ -29,7 +29,7 @@ export const findUser = async(userId: number, userRepository: UserRepository, fi
 export const findUserByUsername = async(username: string, userRepository: UserRepository) => {
   const user = await userRepository.findByUser(username);
   if (!user) {
-    throw new Error("User not found!");
+    throw new Error("User not found.");
   }
   return user; 
 };
@@ -37,7 +37,7 @@ export const findUserByUsername = async(username: string, userRepository: UserRe
 export const findUserByEmail = async(email: string, userRepository: UserRepository) => {
   const user = await userRepository.findByEmail(email);
   if (!user) {
-    throw new Error("User not found!");
+    throw new Error("User not found.");
   }
   return user; 
 };
@@ -56,7 +56,7 @@ export const createUser = async(userToCreate: any, UserRepository: UserRepositor
 export const deleteUser = async(userId: number, userRepository: UserRepository) => {
   const user = await userRepository.findByPk(userId);
   if (!user) {
-    throw new Error("User not found!");
+    throw new Error("User not found.");
   }
   await userRepository.destroy(userId);
 }; 
@@ -69,7 +69,7 @@ export const updateUser = async(userId: number, userToUpdate: any, userRepositor
   }
   const user = await userRepository.findByPk(userId);
   if (!user) {
-    throw new Error("User not found!");
+    throw new Error("User not found.");
   }
   await userRepository.update(userId, userToUpdate);
 };

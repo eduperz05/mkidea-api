@@ -80,7 +80,7 @@ describe("findUser", () => {
 describe("findUserByName", () => {
   it("should return an error if the user is not found", async() => {
     const userRepository = new UserRepositoryMock();
-    await expect(findUserByUsername("test", userRepository)).rejects.toThrowError("User not found!");
+    await expect(findUserByUsername("test", userRepository)).rejects.toThrowError("User not found.");
   });
 
   it("should return a user by his name", async() => {
@@ -93,7 +93,7 @@ describe("findUserByName", () => {
 describe("findUserByEmail", () => {
   it("should return an error if the email is not found", async() => {
     const userRepository = new UserRepositoryMock();
-    await expect(findUserByEmail("test", userRepository)).rejects.toThrowError("User not found!");
+    await expect(findUserByEmail("test", userRepository)).rejects.toThrowError("User not found.");
   });
 
   it("should return a user by his email", async() => {
@@ -128,7 +128,7 @@ describe("createUser", () => {
 describe("deleteUser", () => {
   it("should return an error if the user is not found", async() => {
     const userRepository = new UserRepositoryMock();
-    await expect(deleteUser(1, userRepository)).rejects.toThrowError("User not found!");
+    await expect(deleteUser(1, userRepository)).rejects.toThrowError("User not found.");
   });
 });
 
@@ -145,6 +145,6 @@ describe("updateUser", () => {
   
   it("should return an error if the user is not found", async() => {
     const userRepository = new UserRepositoryMock();
-    await expect(updateUser(1, userUpdate, userRepository)).rejects.toThrowError("User not found!");
+    await expect(updateUser(1, userUpdate, userRepository)).rejects.toThrowError("User not found.");
   });
 });
