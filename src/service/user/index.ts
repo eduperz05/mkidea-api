@@ -54,6 +54,10 @@ export const createUser = async(userToCreate: any, UserRepository: UserRepositor
 };
 
 export const deleteUser = async(userId: number, userRepository: UserRepository) => {
+  const user = await userRepository.findByPk(userId);
+  if (!user) {
+    throw new Error("User not found!");
+  }
   await userRepository.destroy(userId);
 }; 
 
@@ -62,6 +66,10 @@ export const updateUser = async(userId: number, userToUpdate: any, userRepositor
   const isValid_userOperation = Object.keys(userToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_userOperation) {
     throw new Error("Invalid update parameters.");
+  }
+  const user = await userRepository.findByPk(userId);
+  if (!user) {
+    throw new Error("User not found!");
   }
   await userRepository.update(userId, userToUpdate);
 };

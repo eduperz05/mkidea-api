@@ -1,37 +1,64 @@
 import { NewsRepository } from "../../API/repositories/NewsRepository";
-import { findNews, createNews } from ".";
+import { findNews, findNewsById, findNewsByTitle } from ".";
 
-export class NewsRepositoryMock implements NewsRepository {
+class NewsRepositoryMock implements NewsRepository {
 
-    public async findAll(): any {
-        return null;
-    }
+  public findAll(): any {
+    return null;
+  }
 
-    public async findByPk(id_news: number): any {
-        return null;
-    }
+  public findByPk(): any {
+    return null;
+  }
 
-    public async findByTitle(value: string): any {
-        return null;
-    }
+  public findByTitle(): any {
+    return null;
+  }
 
-    public async create(newsToCreate: any): any {
-        return newsToCreate;
-    }
+  public create(newsToCreate: any): any {
+    return newsToCreate;
+  }
 
-    public async destroy(id_news: number): any {
-        return null;
-    }
+  public destroy(): any {
+    return null;
+  }
 
-    public async update(id_news: number, newsToUpdate: any): any {
-        return null;
-    }
+  public update(): any {
+    return null;
+  }
 
-    public async titleExists(newsToCreate: any): any {
-        return false;
-    }
+  public titleExists(): any {
+    return false;
+  }
 }
 
 const news = {
-    title: "test"
-}
+  title: "test"
+};
+
+describe("findNews", () => {
+  it("should return an empty array", async() => {
+    const newsRepository = new NewsRepositoryMock();
+    newsRepository.findAll = jest.fn().mockReturnValue([]);
+    await expect(findNews(newsRepository, false)).rejects.toThrowError("No news on database, please create one before trying to find.");
+  });
+});
+
+describe("findNewsById", () => {
+  it("should return News not found", async() => {
+    const newsRepository = new NewsRepositoryMock();
+    await expect(findNewsById(1 ,newsRepository, false)).rejects.toThrowError("News not found");
+  });
+});
+
+describe("findNewsByTitle", () => {
+  it("should return News not found", async() => {
+    const newsRepository = new NewsRepositoryMock();
+    await expect(findNewsByTitle("test" ,newsRepository)).rejects.toThrowError("News not found");
+  });
+//   it("should return news object", async() => {
+//     const newsRepository = new NewsRepositoryMock();
+//     newsRepository.findByTitle() = ;
+//     await expect(findNewsByTitle("test" ,newsRepository)).rejects.toThrowError("News not found");
+//   });
+});
