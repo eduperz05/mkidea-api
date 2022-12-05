@@ -3,7 +3,8 @@ import { Team } from "../models/team";
 export interface TeamRepository {
   findAll(): Promise<Team[]>;
   findByPk(id: number): Promise<Team|null>;
-  findByIdProject(value: number): Promise<Team[]|null>;
+  findByIdProject(value: number): Promise<Team[]>;
+  findByIdUser(value: number): Promise<Team[]>;
   create(team: any): Promise<Team>;
   destroy(id: number): Promise<void>;
   update(id: number, team: any): Promise<Team|null>;
@@ -20,8 +21,12 @@ export class TeamRepositorySequelize implements TeamRepository {
     return Team.findByPk(id_team);
   }
   
-  public async findByIdProject(value: number): Promise<Team[]|null> {
+  public async findByIdProject(value: number): Promise<Team[]> {
     return Team.findAll({ where: { id_project: value } });
+  }
+
+  public async findByIdUser(value: number): Promise<Team[]> {
+    return Team.findAll({ where: { id_users: value } });
   }
 
   public async create(teamToCreate: any): Promise<Team> {

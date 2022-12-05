@@ -1,5 +1,5 @@
 import { ProjectRepository } from "../../API/repositories/ProjectRepository";
-import { findProjects, findProject, createProject, deleteProject, updateProject } from ".";
+import { findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectsByStatus, findProjectByName } from ".";
 
 class ProjectRepositoryMock implements ProjectRepository {
 
@@ -24,11 +24,11 @@ class ProjectRepositoryMock implements ProjectRepository {
   }
 
   public findByOwner(): any {
-    return null;
+    return [];
   }
 
   public findByStatus(): any {
-    return null;
+    return [];
   }
 
   public projectExists(): any {
@@ -108,8 +108,6 @@ describe("deleteProject", () => {
 });
 
 describe("updateProject", () => {
-  
-
   it("should return an error if the parameters are invalid", async() => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
@@ -123,4 +121,45 @@ describe("updateProject", () => {
 });
 
 describe("findProjectsByOwner", () => {
-    
+  it("should return an error if the project is not found", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    await expect(findProjectsByOwner(1, projectRepository)).rejects.toThrowError("No projects found for this owner.");
+  });
+
+  it("should return an array of projects", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    projectRepository.findByOwner = jest.fn().mockReturnValue([project]);
+    await expect(findProjectsByOwner(1, projectRepository)).resolves.toEqual([project]);
+  });
+});
+
+describe("findProjectsByStatus", () => {
+  it("Should return an error if the status is not valid", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    await expect(findProjectsByStatus("test", projectRepository)).rejects.toThrowError("Invalid status.");
+  });
+
+  it("should return an error if the project is not found", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    await expect(findProjectsByStatus("active", projectRepository)).rejects.toThrowError("No projects found for this status.");
+  });
+
+  it("should return an array of projects", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    projectRepository.findByStatus = jest.fn().mockReturnValue([project]);
+    await expect(findProjectsByStatus("active", projectRepository)).resolves.toEqual([project]);
+  });
+});
+
+describe("findProjectByName", () => {
+  it("should return an error if the project is not found", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    await expect(findProjectByName("test", projectRepository)).rejects.toThrowError("No project found with this name.");
+  });
+
+  it("should return a project", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    projectRepository.projectByName = jest.fn().mockReturnValue(project);
+    await expect(findProjectByName("test", projectRepository)).resolves.toEqual(project);
+  });
+});

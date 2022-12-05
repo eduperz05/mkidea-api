@@ -61,7 +61,7 @@ describe("findUsers", () => {
 describe("findUser", () => {
   it("should return an error if the user is not found", async() => {
     const userRepository = new UserRepositoryMock();
-    await expect(findUser(1, userRepository, false)).rejects.toThrowError("User not found!");
+    await expect(findUser(1, userRepository, false)).rejects.toThrowError("User not found.");
   });
   
   it("should return a unfiltered user", async() => {

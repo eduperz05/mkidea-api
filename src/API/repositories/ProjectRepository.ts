@@ -6,7 +6,7 @@ export interface ProjectRepository {
   create(project: any): Promise<Project>;
   destroy(id: number): Promise<void>;
   update(id: number, project: any): Promise<Project|null>;
-  findByOwner(id: number): Promise<Project[]|null>;
+  findByOwner(id: number): Promise<Project[]>;
   findByStatus(status: string): Promise<Project[]>;
   projectExists(id: number): Promise<boolean>;
   projectByName(name: string): Promise<Project|null>;
@@ -35,12 +35,16 @@ export class ProjectRepositorySequelize implements ProjectRepository {
     return Project.findByPk(id_project);
   }
 
-  public async findByOwner(id_owner: number): Promise<Project[] | null> {
+  public async findByOwner(id_owner: number): Promise<Project[]> {
     return Project.findAll({ where: { id_owner: id_owner } });
   }
 
   public async findByStatus(status: string): Promise<Project[]> {
     return Project.findAll({ where: { status: status } });
+  }
+
+  public async projectByName(name: string): Promise<Project | null> {
+    return Project.findOne({ where: { name: name } });
   }
 
   public async projectExists(projectToCreate: any): Promise<boolean> {
@@ -51,9 +55,5 @@ export class ProjectRepositorySequelize implements ProjectRepository {
     } else {
       return false;
     }
-  }
-
-  public async projectByName(name: string): Promise<Project | null> {
-    return Project.findOne({ where: { name: name } });
   }
 }
