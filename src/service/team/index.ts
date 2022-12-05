@@ -18,7 +18,7 @@ export const findTeams = async(teamRepository: TeamRepository, filter: boolean) 
 export const findTeamByPk = async(teamId: number, teamRepository: TeamRepository, filter: boolean) => {
   const team = await teamRepository.findByPk(teamId);
   if (!team) {
-    throw new Error("TeamId not found!");
+    throw new Error("Team Id not found.");
   }
   let teamJsoned = team.toJSON();
   if (filter) {
@@ -35,20 +35,35 @@ export const findTeamByProject = async(projectId: number, teamRepository: TeamRe
   return teams;
 };
 
+export const findTeamsByUser = async(userId: number, teamRepository: TeamRepository) => {
+  const teams = await teamRepository.findByIdUser(userId);
+  if (!teams?.length) {
+    throw new Error("No teams for this user.");
+  }
+  return teams;
+};
+
 export const createTeam = async(teamToCreate: any, teamRepository: TeamRepository) => {
   if (await teamRepository.isUserOnTeam(teamToCreate)) {
-    throw new Error("User already on team");
+    throw new Error("User already on team.");
   }
   const team = await teamRepository.create(teamToCreate);
   return team;
-
 };
 
 export const deleteTeam = async(teamId: number, teamRepository: TeamRepository) => {
+  const team = await teamRepository.findByPk(teamId);
+  if (!team) {
+    throw new Error("Team Id not found.");
+  }
   await teamRepository.destroy(teamId);
 }; 
 
 export const updateUserOnTeam = async(teamId: number, teamToUpdate: any, teamRepository: any) => {
+  const team = await teamRepository.findByPk(teamId);
+  if (!team) {
+    throw new Error("Team Id not found.");
+  }
   const allowedUpdates = ["role"];
   const isValid_teamOperation = Object.keys(teamToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_teamOperation) {
