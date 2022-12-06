@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    container_name: mkidea-db
+    image: mariadb
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.env:/app/.env
+    restart: always
+  backend:
+    image: mkidea-api:0.0.1
+    env_file: .env
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - PORT_APP=${PORT_APP}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      - db
+    restart: always
