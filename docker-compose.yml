@@ -11,6 +11,7 @@ services:
       - "3306:3306"
     volumes:
       - ./.env:/app/.env
+      - serverDir:/var/lib/mysql
     restart: always
   backend:
     image: mkidea-api:0.0.1
@@ -20,8 +21,8 @@ services:
       - DB_USER=${DB_USER}
       - PORT_APP=${PORT_APP}
       - DB_NAME=${DB_NAME}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
+      - DB_HOST=mkidea-db
+      - DB_PORT=3306
     ports:
       - "3000:3000"
     volumes:
