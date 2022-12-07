@@ -10,7 +10,7 @@ services:
       - "3306:3306"
     volumes:
       - ./.env:/app/.env
-      - /Users/romero/Desktop/mkidea-data:/var/lib/mysql
+      - server-dir/mkidea-data:/var/lib/mysql
     restart: always
   backend:
     image: mkidea-api:0.0.1
