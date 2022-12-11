@@ -95,7 +95,7 @@ export const postUserController = async(req: Request, res: Response) => {
       res.status(400).json("A obligatory parameter is missing on body.");
     }
     const userRepository = new UserRepositorySequelize();
-    const user = await createUser(req.body, userRepository);
+    const user = await createUser(req.body, userRepository); 
     res.status(201).json(user);
   } catch (err: any) {
     res.status(400).json(err);

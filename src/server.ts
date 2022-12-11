@@ -5,6 +5,7 @@ import { userRouter } from "./API/routes/user/index";
 import { projectRouter } from "./API/routes/project/index";
 import { teamRouter } from "./API/routes/team/index";
 import { newsRouter } from "./API/routes/news/index";
+import { authRouter } from "./API/routes/auth/index";
 
 const app = express();
 
@@ -16,11 +17,12 @@ app.get("/", (req, res) => {
   res.send("MKIdea API!");
 });
 
-
+// app.use(middlewareAuth);
 app.use("/user", userRouter);
 app.use("/project", projectRouter);
 app.use("/team", teamRouter);
 app.use("/news", newsRouter);
+app.use("/auth", authRouter);
 
 app.use((
   err: Error,

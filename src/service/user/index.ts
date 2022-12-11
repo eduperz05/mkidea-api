@@ -1,6 +1,7 @@
 import { UserRepository } from "../../API/repositories/UserRepository";
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsUser } from "../../config/filterFields";
+import { encryptPassword } from "../../utils/encryptPassword";
 
 export const findUsers = async(userRepository: UserRepository, filter: boolean) => {
   const users = await userRepository.findAll();
@@ -49,7 +50,9 @@ export const createUser = async(userToCreate: any, UserRepository: UserRepositor
   if (await UserRepository.emailExists(userToCreate)) {
     throw new Error("The email already exists.");
   }
+  userToCreate.password = encryptPassword(userToCreate.password);
   const user = await UserRepository.create(userToCreate);
+  
   return user;
 };
 
