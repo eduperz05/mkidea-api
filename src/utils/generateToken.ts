@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
-const SECRET_KEY = process.env.JWT_SECRET; // SECRET_KEY = process.env.SECRET_KEY not working preguntar a raul. POR QUE DEBO IMPORTAR DOTENV PARA QUE FUNCIONE?????????????????
+const SECRET_KEY = process.env.JWT_SECRET;
 
 export const generateToken = async(userId: number): Promise<string> => {
   return new Promise((resolve: any, reject: any) => {
