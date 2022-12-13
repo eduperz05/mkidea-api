@@ -1,6 +1,6 @@
 import { login } from ".";
 import { UserRepository } from "../../API/repositories/UserRepository";
-
+import { encryptPassword } from "../../utils/encryptPassword";
 class UserRepositoryMock implements UserRepository {
   public findAll(): any {
     return null;
@@ -32,50 +32,32 @@ class UserRepositoryMock implements UserRepository {
   }
 }
 
+const passwordHashed = encryptPassword("password");
+
+const user = {
+  id_user: 1,
+  username: "johnsmith",
+  password: passwordHashed, 
+};
+
 describe("login", () => {
-  it("should generate a token if the username and password are correct", async() => {
-    // Set up the user repository to return a known user
-    const userRepository = new UserRepositoryMock;
-    userRepository.findByUser = jest.fn().mockResolvedValue({
-      // id_user: 1,
-      username: "johnsmith",
-      password: "hashed-password",
-    });
-    // const user = {
-    //   findByUser: jest.fn().mockResolvedValue({
-    //     id_user: 1,
-    //     username: "johnsmith",
-    //     password: "hashed-password",
-    //   }) };
-   
-
-    // Call the login function
-    const result = await login("johnsmith", "password", userRepository);
-
-    // Check that the generated token matches the expected value
-    expect(result).toEqual("generated-token");
-  });
-
   it("should throw an error if the username does not exist", async() => {
-    // Set up the user repository to return null when searching for the user
     const userRepository = new UserRepositoryMock;
-    userRepository.findByUser = jest.fn().mockResolvedValue(null);
-
-    // Check that the login function throws the expected error
-    await expect(login("invalid-username", "password", userRepository)).rejects.toThrow("User not found");
+    userRepository.findByUser = jest.fn().mockReturnValue(null);
+    await expect(login("test","pswd", userRepository)).rejects.toThrowError("User not found");
   });
 
   it("should throw an error if the password is incorrect", async() => {
-    // Set up the user repository to return a user with a different password
-    const userRepository = {
-      findByUser: jest.fn().mockResolvedValue({
-        id_user: 1,
-        username: "johnsmith",
-        password: "incorrect-password",
-      }),
-    };
+    const userRepository = new UserRepositoryMock;
+    userRepository.findByUser = jest.fn().mockResolvedValue(user);
+    await expect(login("johnsmith", "password1", userRepository)).rejects.toThrow("Incorrect password");
+  });
 
-    // Check that the login function throws the expected error
-    await expect(login("johnsmith", "password", userRepository)).rejects.toThrow("Incorrect password");
+  it("should generate a token if the username and password are correct", async() => {
+    const userRepository = new UserRepositoryMock;
+    userRepository.findByUser = jest.fn().mockResolvedValue(user);
+    const result = await login("johnsmith", "password", userRepository);
+    console.log(result);
+    expect(result).toEqual("");
   });
 });
