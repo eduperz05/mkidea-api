@@ -43,15 +43,15 @@ export const findUserByEmail = async(email: string, userRepository: UserReposito
   return user; 
 };
 
-export const createUser = async(userToCreate: any, UserRepository: UserRepository) => {
-  if (await UserRepository.usernameExists(userToCreate)) {
+export const createUser = async(userToCreate: any, userRepository: UserRepository) => {
+  if (await userRepository.usernameExists(userToCreate)) {
     throw new Error("The username already exists.");
   }
-  if (await UserRepository.emailExists(userToCreate)) {
+  if (await userRepository.emailExists(userToCreate)) {
     throw new Error("The email already exists.");
   }
   userToCreate.password = encryptPassword(userToCreate.password);
-  const user = await UserRepository.create(userToCreate);
+  const user = await userRepository.create(userToCreate);
   
   return user;
 };
