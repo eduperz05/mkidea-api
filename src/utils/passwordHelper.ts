@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 
 export interface PasswordHelper {
-  encryptPassword(password: string): string;
-  comparePassword(password: string, userPassword: string): boolean;
+  encrypt(password: string): string;
+  compare(password: string, userPassword: string): boolean;
 }
 
 export class PasswordHelperBcrypt implements PasswordHelper {
@@ -15,11 +15,11 @@ export class PasswordHelperBcrypt implements PasswordHelper {
     this.salt = bcrypt.genSaltSync(this.SALT_SEED);
   }
 
-  public encryptPassword(password: string): string {
+  public encrypt(password: string): string {
     return bcrypt.hashSync(password, this.salt);
   }
 
-  public comparePassword(password: string, userPassword: string): boolean {
+  public compare(password: string, userPassword: string): boolean {
     return bcrypt.compareSync(password, userPassword);
   }
 }
