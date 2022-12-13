@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 export interface TokenHelper {
   generate(userId: number): Promise<string>;
+  decode(token: string): any | boolean;
 }
 
 export class TokenHelperJWT implements TokenHelper {
@@ -30,5 +31,16 @@ export class TokenHelperJWT implements TokenHelper {
         resolve(token);
       });
     });
+  }
+
+  public decode(token: string): any | boolean {
+    if (!this.SECRET_KEY) {
+      throw new Error("Password is undefined");
+    }
+    try {
+      return jwt.verify(token, this.SECRET_KEY);
+    } catch (error) {
+      return false;
+    }
   }
 }

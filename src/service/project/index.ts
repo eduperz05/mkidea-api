@@ -1,6 +1,8 @@
 import { ProjectRepository } from "../../API/repositories/ProjectRepository";
+
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsProject } from "../../config/filterFields";
+import { TeamRepository } from "../../API/repositories/TeamRepository";
 
 export const findProjects = async(projectRepository: ProjectRepository, filter: boolean) => {
   const projects = await projectRepository.findAll();
@@ -83,4 +85,16 @@ export const findProjectByName = async(name: string, projectRepository: ProjectR
     throw new Error("No project found with this name.");
   }
   return project;
+};
+
+export const checkUserOnProject = async(teamRepository: TeamRepository, projectRepository: ProjectRepository, projectId: number, userId: number) => {
+  const team = await teamRepository.findByIdProject(projectId);
+  if (team.length === 0){
+    throw new Error("No team found for this project.");
+  }
+  const project = await projectRepository.findByPk(projectId);
+  if (project === null){
+    throw new Error("No project found.");
+  }
+  return team.some((user) => user.id_users === userId);
 };

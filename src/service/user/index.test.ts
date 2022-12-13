@@ -23,7 +23,6 @@ class UserRepositoryMock implements UserRepository {
   public update(): any {
     return null;
   }
-
   public usernameExists(): any {
     return false;
   }
