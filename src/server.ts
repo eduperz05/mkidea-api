@@ -12,6 +12,7 @@ import { projectRouterPublic } from "./API/routes/projectPublic";
 import { teamRouterPublic } from "./API/routes/teamPublic";
 import { newsRouterPublic } from "./API/routes/newsPublic";
 import { authSession } from "./API/middlewares/auth-session";
+import { authAdmin } from "./API/middlewares/auth-admin";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(authSession);
 app.use("/user", userRouter);
 app.use("/project", projectRouter);
 app.use("/team", teamRouter);
+app.use(authAdmin);
 app.use("/news", newsRouter);
 
 app.use((
