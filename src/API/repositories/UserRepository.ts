@@ -45,20 +45,12 @@ export class UserRepositorySequelize implements UserRepository {
   public async usernameExists(userToCreate: any): Promise<boolean> {
     const username = userToCreate.username;
     const sameUsername = await User.findAll({ where: { username: username } });
-    if (sameUsername.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return sameUsername.length > 0;
   }
 
   public async emailExists(userToCreate: any): Promise<boolean> {
     const email = userToCreate.email;
     const sameEmail = await User.findAll({ where: { email: email } });
-    if (sameEmail.length === 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return sameEmail.length > 0;
   }
 }

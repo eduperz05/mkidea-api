@@ -8,8 +8,8 @@ export const getProjectsController = async(req: Request, res: Response) => {
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjects(projectRepository, false);
     res.status(200).json(projects);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
 
   return;
@@ -32,8 +32,8 @@ export const getProjectController = async(req: any, res: any) => {
     }
     const project = await findProject(parseInt(id_project), projectRepository, false);
     res.status(200).json(project);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -43,8 +43,8 @@ export const getProjectsPublicController = async(req: Request, res: Response) =>
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjects(projectRepository, true);
     res.status(200).json(projects);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
 
   return;
@@ -60,8 +60,8 @@ export const getProjectPublicController = async(req: Request, res: Response) => 
     const projectRepository = new ProjectRepositorySequelize();
     const project = await findProject(parseInt(id_project), projectRepository, true);
     res.status(200).json(project);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
 
   return;
@@ -79,8 +79,8 @@ export const postProjectController = async(req: Request, res: Response) => {
     const projectRepository = new ProjectRepositorySequelize();
     const project = await createProject(req.body, projectRepository);
     res.status(201).json(project);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
 
   return;
@@ -98,8 +98,8 @@ export const deleteProjectController = async(req: Request, res: Response) => {
     const deletedProject = await findProject(parseInt(id_project), projectRepository, false);
     await deleteProject(parseInt(id_project), projectRepository);
     res.status(200).json({ deletedProject });
-  } catch (err) {
-    res.status(400).json({ err });
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -119,8 +119,8 @@ export const updateProjectController = async(req: Request, res: Response) => {
     await updateProject(parseInt(id_project), req.body, projectRepository);
     const updatedProject = await findProject(parseInt(id_project), projectRepository, false);
     res.status(200).json(updatedProject);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -142,8 +142,8 @@ export const getProjectsByStatusController = async(req: Request, res: Response) 
     }
     
     res.status(200).json(projects);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -160,8 +160,8 @@ export const getProjectsByOwnerController = async(req: Request, res: Response) =
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjectsByOwner(parseInt(id_owner), projectRepository);
     res.status(200).json(projects);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -177,8 +177,8 @@ export const getProjectByNameController = async(req: Request, res: Response) => 
     const projectRepository = new ProjectRepositorySequelize();
     const project = await findProjectByName(name, projectRepository);
     res.status(200).json(project);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };

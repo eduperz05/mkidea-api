@@ -10,8 +10,10 @@ export const authSession = async(req: AuthRequest, res: AuthResponse, next: Auth
       res.status(401).json("Unauthorized");
       return;
     }
-    req.id_user = payload.userId;
-    req.role = payload.role;
+    req.user = {
+      userId: payload.userId,
+      role: payload.role
+    };
     next();
   } catch (err) {
     res.status(401).json("Failed to authenticate token.");

@@ -20,8 +20,8 @@ export const loginController = async(req: Request, res: Response) => {
     const token = await login(username, password, userRepository, passwordHelper, tokenHelper);
     res.cookie("token", token, { httpOnly: true });
     res.status(200).json({ user });
-  } catch (err){
-    res.status(400).json("User not found");
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -38,8 +38,8 @@ export const registerController = async(req: Request, res: Response) => {
     const token = await register(req.body, userRepository, passwordHelper, tokenHelper);
     res.cookie("token", token, { httpOnly: true });
     res.status(200).json("User created");
-  } catch (err) {
-    res.status(400).json("Something went wrong, user not created.");
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -49,8 +49,8 @@ export const logoutController = async(req: Request, res: Response) => {
   try {
     res.clearCookie("token");
     res.status(200).json("Logout successful");
-  } catch (err){
-    res.status(400).json("Logout failed");
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };

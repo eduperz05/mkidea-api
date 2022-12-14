@@ -8,8 +8,8 @@ export const getTeamsController = async(req: Request, res: Response) => {
     const teamRepository = new TeamRepositorySequelize();
     const teams = await findTeams(teamRepository, false);
     res.status(200).json(teams);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -24,8 +24,8 @@ export const getTeamController = async(req: Request, res: Response) => {
     const teamRepository = new TeamRepositorySequelize();
     const team = await findTeamByPk(parseInt(id_team), teamRepository, false);
     res.status(200).json(team);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -35,8 +35,8 @@ export const getTeamsPublicController = async(req: Request, res: Response) => {
     const teamRepository = new TeamRepositorySequelize();
     const teams = await findTeams(teamRepository, true);
     res.status(200).json(teams);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -51,8 +51,8 @@ export const getTeamPublicController = async(req: Request, res: Response) => {
     const teamRepository = new TeamRepositorySequelize();
     const team = await findTeamByPk(parseInt(id_team), teamRepository, true);
     res.status(200).json(team);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -67,8 +67,8 @@ export const getTeamByProjectController = async(req: Request, res: Response) => 
     const teamRepository = new TeamRepositorySequelize();
     const teams = await findTeamByProject(parseInt(id_project), teamRepository);
     res.status(200).json(teams);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -84,8 +84,8 @@ export const postTeamController = async(req: Request, res: Response) => {
     const teamRepository = new TeamRepositorySequelize();
     const team = await createTeam(req.body, teamRepository);
     res.status(201).json(team);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -101,8 +101,8 @@ export const deleteTeamController = async(req: Request, res: Response) => {
     const deleteUserOnTeam = await findTeamByPk(parseInt(id_team), teamRepository, false);
     await deleteTeam(parseInt(id_team), teamRepository);
     res.status(200).json(deleteUserOnTeam);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -121,8 +121,8 @@ export const changeTeamController = async(req: Request, res: Response) => {
     await updateUserOnTeam(id_team, req.body, teamRepository);
     const updatedUserOnTeam = await findTeamByPk(id_team, teamRepository, false);
     res.status(200).json(updatedUserOnTeam);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };

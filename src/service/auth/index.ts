@@ -23,6 +23,9 @@ export const register = async(userToCreate: any, userRepository: UserRepository,
     throw new Error("The email already exists.");
   }
   userToCreate.password = passwordHelper.encrypt(userToCreate.password);
+  if (!userToCreate.password) {
+    throw new Error("The password is not valid.");
+  }
   const user = await userRepository.create(userToCreate);
   const token = await tokenHelper.generate(user.id_user, user.role);
   return token;

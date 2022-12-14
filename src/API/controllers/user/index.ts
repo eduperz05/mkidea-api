@@ -11,7 +11,7 @@ export const getUsersController = async(req: Request, res: Response) => {
     const users = await findUsers(userRepository, false);
     res.status(200).json(users);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -22,7 +22,7 @@ export const getUsersPublicController = async(req: Request, res: Response) => {
     const users = await findUsers(userRepository, true);
     res.status(200).json(users);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -38,7 +38,7 @@ export const getUserController = async(req: Request, res: Response) => {
     const user = await findUser(parseInt(id_user), userRepository, false);
     res.status(200).json(user);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -54,7 +54,7 @@ export const getUserPublicController = async(req: Request, res: Response) => {
     const user = await findUser(parseInt(id_user), userRepository, true);
     res.status(200).json(user);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -69,8 +69,8 @@ export const getUserByUsernameController = async(req: Request, res: Response) =>
     const userRepository = new UserRepositorySequelize();
     const user = await findUserByUsername(username, userRepository);
     res.status(200).json(user);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -85,8 +85,8 @@ export const getUserByEmailController = async(req: Request, res: Response) => {
     const userRepository = new UserRepositorySequelize();
     const user = await findUserByEmail(email, userRepository);
     res.status(200).json(user);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -96,10 +96,7 @@ export const postUserController = async(req: Request, res: Response) => {
     if (!req.body.username || 
       !req.body.email || 
       !req.body.password || 
-      !req.body.role ||
-      !req.body.phone ||
-      !req.body.about ||
-      !req.body.avatar) {
+      !req.body.role) {
       res.status(400).json("A obligatory parameter is missing on body.");
       return;
     }
@@ -108,7 +105,7 @@ export const postUserController = async(req: Request, res: Response) => {
     const user = await createUser(req.body, userRepository, passwordHelper); 
     res.status(201).json(user);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -124,11 +121,10 @@ export const deleteUserController = async(req: Request, res: Response) => {
     const deletedUser = await findUser(parseInt(id_user), userRepository, false);
     await deleteUser(parseInt(id_user), userRepository);
     res.status(200).json(deletedUser);
-    return;
-  } catch (err) {
-    res.status(400).json(err);
-    return;
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
+  return;
 };
 
 export const changeUserController = async(req: Request, res: Response) => {
@@ -145,8 +141,8 @@ export const changeUserController = async(req: Request, res: Response) => {
     await updateUser(parseInt(id_user), req.body, userRepository);
     const updatedUser = await findUser(parseInt(id_user), userRepository, false);
     res.status(200).json(updatedUser);
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (err: any) {
+    res.status(400).json(err.message);
   }
   return;
 };

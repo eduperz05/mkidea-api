@@ -9,7 +9,7 @@ export const getNewsController = async(req: Request, res: Response) => {
     const news = await findNews(newsRepository, false);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -25,7 +25,7 @@ export const getNewsByIdController = async(req: Request, res: Response) => {
     const news = await findNewsById(parseInt(id_news), newsRepository, false);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -36,7 +36,7 @@ export const getNewsPublicController = async(req: Request, res: Response) => {
     const news = await findNews(newsRepository, true);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -52,7 +52,7 @@ export const getNewsByIdPublicController = async(req: Request, res: Response) =>
     const news = await findNewsById(parseInt(id_news), newsRepository, true);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -68,7 +68,7 @@ export const getNewsByTitleController = async(req: Request, res: Response) => {
     const news = await findNewsByTitle(title, newsRepository);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -86,7 +86,7 @@ export const postNewsController = async(req: Request, res: Response) => {
     const news = await createNews(req.body, newsRepository);
     res.status(201).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -103,7 +103,7 @@ export const deleteNewsController = async(req: Request, res: Response) => {
     await deleteNews(parseInt(id_news), newsRepository);
     res.status(200).json(news);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
@@ -123,7 +123,7 @@ export const changeNewsController = async(req: Request, res: Response) => {
     const updatedNews = await findNewsById(parseInt(id_news), newsRepository, false);
     res.status(200).json(updatedNews);
   } catch (err: any) {
-    res.status(400).json(err);
+    res.status(400).json(err.message);
   }
   return;
 };
