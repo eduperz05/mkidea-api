@@ -1,4 +1,4 @@
-import { login } from ".";
+import { login, register } from ".";
 import { UserRepository } from "../../API/repositories/UserRepository";
 import { TokenHelper } from "../../utils/tokenHelper";
 import { PasswordHelper } from "../../utils/passwordHelper";
@@ -49,24 +49,7 @@ export class TokenHelperMock implements TokenHelper {
   constructor() {
     this.SECRET_KEY = process.env.SECRET_KEY;
   }
-
-  public async generate(userId: number): Promise<string> {
-    return new Promise((resolve: any, reject: any) => {
-      const payload = { userId };
-      if (!this.SECRET_KEY) {
-        throw new Error("Password is undefined");
-      }
-      jwt.sign(payload, this.SECRET_KEY, {
-        expiresIn: "4h"
-      }, (err: any, token: any) => {
-        if (err) {
-          console.log(err);
-          reject("Could not generate token");
-        }
-        resolve(token);
-      });
-    });
-  }
+  public generate(): any {}
 }
 
 const user = {
@@ -89,16 +72,42 @@ describe("login", () => {
     const userRepository = new UserRepositoryMock;
     const tokenHelper = new TokenHelperMock;
     userRepository.findByUser = jest.fn().mockResolvedValue(user);
-    await expect(login("test","pswd", userRepository,passwordHelper,tokenHelper)).rejects.toThrow("Incorrect password");
+    passwordHelper.compare = jest.fn().mockReturnValue(false);
+    await expect(login("test","pswd", userRepository,passwordHelper,tokenHelper)).rejects.toThrowError("Incorrect password");
   });
-
-  it("should generate a token if the username and password are correct", async() => {
+  it("should return the token", async() => {
     const passwordHelper = new PasswordHelperMock;
     const userRepository = new UserRepositoryMock;
     const tokenHelper = new TokenHelperMock;
     userRepository.findByUser = jest.fn().mockResolvedValue(user);
-    const result = await login("test","pswd", userRepository, passwordHelper,tokenHelper);
-    console.log(result);
-    expect(result).toEqual("");
+    tokenHelper.generate = jest.fn().mockReturnValue("");
+    await expect(login("test","pswd", userRepository,passwordHelper,tokenHelper)).resolves.toEqual("");
+  });
+
+});
+
+describe("register", () => {
+  it("should throw an error if the username already exists", async() => {
+    const passwordHelper = new PasswordHelperMock;
+    const userRepository = new UserRepositoryMock;
+    const tokenHelper = new TokenHelperMock;
+    userRepository.usernameExists = jest.fn().mockReturnValue(true);
+    await expect(register(user, userRepository, passwordHelper,tokenHelper)).rejects.toThrowError("The username already exists.");
+  });
+  
+  it("should throw an error if the email already exists.", async() => {
+    const passwordHelper = new PasswordHelperMock;
+    const userRepository = new UserRepositoryMock;
+    const tokenHelper = new TokenHelperMock;
+    userRepository.emailExists = jest.fn().mockReturnValue(true);
+    await expect(register(user, userRepository,passwordHelper,tokenHelper)).rejects.toThrowError("The email already exists.");
+  });
+  it("should return the token", async() => {
+    const passwordHelper = new PasswordHelperMock;
+    const userRepository = new UserRepositoryMock;
+    const tokenHelper = new TokenHelperMock;
+    userRepository.create = jest.fn().mockReturnValue(user);
+    tokenHelper.generate = jest.fn().mockReturnValue("");
+    await expect(register(user, userRepository,passwordHelper,tokenHelper)).resolves.toEqual("");
   });
 });
