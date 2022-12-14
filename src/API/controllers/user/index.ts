@@ -92,7 +92,10 @@ export const postUserController = async(req: Request, res: Response) => {
     if (!req.body.username || 
       !req.body.email || 
       !req.body.password || 
-      !req.body.role) {
+      !req.body.role ||
+      !req.body.phone ||
+      !req.body.about ||
+      !req.body.avatar) {
       res.status(400).json("A obligatory parameter is missing on body.");
     }
     const userRepository = new UserRepositorySequelize();

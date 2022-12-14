@@ -65,6 +65,30 @@ export class User extends Model<User> {
     },
   })
     role!: number;
+  
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    validate: {
+      max: 255
+    }
+  })
+    about!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    validate: {
+      max: 13
+    }
+  })
+    phone!: string;
+    
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    avatar!: string;
 
   @HasMany(() => Project)
     projects!: Project[];

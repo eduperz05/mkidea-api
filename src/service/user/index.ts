@@ -65,7 +65,7 @@ export const deleteUser = async(userId: number, userRepository: UserRepository) 
 }; 
 
 export const updateUser = async(userId: number, userToUpdate: any, userRepository: UserRepository) => {
-  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role"];
+  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role", "phone", "avatar", "about"];
   const isValid_userOperation = Object.keys(userToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_userOperation) {
     throw new Error("Invalid update parameters.");
