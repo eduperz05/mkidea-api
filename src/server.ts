@@ -7,6 +7,10 @@ import { projectRouter } from "./API/routes/project/index";
 import { teamRouter } from "./API/routes/team/index";
 import { newsRouter } from "./API/routes/news/index";
 import { authRouter } from "./API/routes/auth/index";
+import { userRouterPublic } from "./API/routes/userPublic";
+import { projectRouterPublic } from "./API/routes/projectPublic";
+import { teamRouterPublic } from "./API/routes/teamPublic";
+import { newsRouterPublic } from "./API/routes/newsPublic";
 import { authSession } from "./API/middlewares/auth-session";
 
 const app = express();
@@ -21,6 +25,10 @@ app.get("/", (req, res) => {
 
 // app.use(middlewareAuth);
 app.use("/auth", authRouter);
+app.use("/public/use", userRouterPublic);
+app.use("/public/project", projectRouterPublic);
+app.use("/public/team", teamRouterPublic);
+app.use("/public/news", newsRouterPublic);
 app.use(authSession);
 app.use("/user", userRouter);
 app.use("/project", projectRouter);

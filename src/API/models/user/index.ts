@@ -60,27 +60,21 @@ export class User extends Model<User> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    validate: {
-      min: 1,
-    },
+    // validate: {
+    //   min: 1,
+    // },
   })
     role!: number;
   
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    validate: {
-      max: 255
-    }
   })
     about!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    validate: {
-      max: 13
-    }
   })
     phone!: string;
     
