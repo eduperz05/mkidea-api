@@ -50,6 +50,7 @@ export class TokenHelperMock implements TokenHelper {
     this.SECRET_KEY = process.env.SECRET_KEY;
   }
   public generate(): any {}
+  public decode(): any {}
 }
 
 const user = {
