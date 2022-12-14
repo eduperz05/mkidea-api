@@ -58,19 +58,17 @@ const user = {
   password: "passwordHashed", 
 };
 
+const passwordHelper = new PasswordHelperMock;
+const userRepository = new UserRepositoryMock;
+const tokenHelper = new TokenHelperMock;
+    
 describe("login", () => {
   it("should throw an error if the username does not exist", async() => {
-    const passwordHelper = new PasswordHelperMock;
-    const userRepository = new UserRepositoryMock;
-    const tokenHelper = new TokenHelperMock;
     userRepository.findByUser = jest.fn().mockReturnValue(null);
     await expect(login("test","pswd", userRepository, passwordHelper,tokenHelper)).rejects.toThrowError("User not found");
   });
 
   it("should throw an error if the password is incorrect", async() => {
-    const passwordHelper = new PasswordHelperMock;
-    const userRepository = new UserRepositoryMock;
-    const tokenHelper = new TokenHelperMock;
     userRepository.findByUser = jest.fn().mockResolvedValue(user);
     passwordHelper.compare = jest.fn().mockReturnValue(false);
     await expect(login("test","pswd", userRepository,passwordHelper,tokenHelper)).rejects.toThrowError("Incorrect password");
