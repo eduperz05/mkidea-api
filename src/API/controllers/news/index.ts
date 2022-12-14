@@ -18,6 +18,7 @@ export const getNewsByIdController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
+      return;
     }
     const { id_news } = req.params;
     const newsRepository = new NewsRepositorySequelize();
@@ -44,6 +45,7 @@ export const getNewsByIdPublicController = async(req: Request, res: Response) =>
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
+      return;
     }
     const { id_news } = req.params;
     const newsRepository = new NewsRepositorySequelize();
@@ -59,6 +61,7 @@ export const getNewsByTitleController = async(req: Request, res: Response) => {
   try {
     if (!req.params.title) {
       res.status(400).json("No title parameter");
+      return;
     }
     const { title } = req.params;
     const newsRepository = new NewsRepositorySequelize();
@@ -77,6 +80,7 @@ export const postNewsController = async(req: Request, res: Response) => {
       !req.body.description || 
       !req.body.url) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
     }
     const newsRepository = new NewsRepositorySequelize();
     const news = await createNews(req.body, newsRepository);
@@ -91,6 +95,7 @@ export const deleteNewsController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
+      return;
     }
     const { id_news } = req.params;
     const newsRepository = new NewsRepositorySequelize();
@@ -107,8 +112,10 @@ export const changeNewsController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
+      return;
     } else if (Object.keys(req.body).length === 0) {
       res.status(400).json("No body parameters");
+      return;
     }
     const { id_news } = req.params;
     const newsRepository = new NewsRepositorySequelize();

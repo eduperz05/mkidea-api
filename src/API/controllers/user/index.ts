@@ -31,6 +31,7 @@ export const getUserController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
+      return;
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
@@ -46,6 +47,7 @@ export const getUserPublicController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
+      return;
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
@@ -61,6 +63,7 @@ export const getUserByUsernameController = async(req: Request, res: Response) =>
   try {
     if (!req.params.username) {
       res.status(400).json("No username parameter");
+      return;
     }
     const { username } = req.params;
     const userRepository = new UserRepositorySequelize();
@@ -76,6 +79,7 @@ export const getUserByEmailController = async(req: Request, res: Response) => {
   try {
     if (!req.params.email) {
       res.status(400).json("No email parameter");
+      return;
     }
     const { email } = req.params;
     const userRepository = new UserRepositorySequelize();
@@ -97,6 +101,7 @@ export const postUserController = async(req: Request, res: Response) => {
       !req.body.about ||
       !req.body.avatar) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
     }
     const userRepository = new UserRepositorySequelize();
     const passwordHelper = new PasswordHelperBcrypt();
@@ -112,6 +117,7 @@ export const deleteUserController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
+      return;
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();
@@ -129,8 +135,10 @@ export const changeUserController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
+      return;
     } else if (Object.keys(req.body).length === 0) {
       res.status(400).json("No body parameters");
+      return;
     }
     const { id_user } = req.params;
     const userRepository = new UserRepositorySequelize();

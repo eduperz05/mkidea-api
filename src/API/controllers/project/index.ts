@@ -19,6 +19,7 @@ export const getProjectController = async(req: any, res: any) => {
   try {
     if (!req.params.id_project){
       res.status(400).json("No id_project parameter");
+      return;
     }
     const { id_project } = req.params;
     const { id_user } = req.id_user;
@@ -53,6 +54,7 @@ export const getProjectPublicController = async(req: Request, res: Response) => 
   try {
     if (!req.params.id_project){
       res.status(400).json("No id_project parameter");
+      return;
     }
     const { id_project } = req.params;
     const projectRepository = new ProjectRepositorySequelize();
@@ -72,6 +74,7 @@ export const postProjectController = async(req: Request, res: Response) => {
       !req.body.status ||
       !req.body.id_owner) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
     }
     const projectRepository = new ProjectRepositorySequelize();
     const project = await createProject(req.body, projectRepository);
@@ -87,6 +90,7 @@ export const deleteProjectController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_project) {
       res.status(400).json("No id_project parameter");
+      return;
     }
     
     const { id_project } = req.params;
@@ -104,8 +108,10 @@ export const updateProjectController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_project) {
       res.status(400).json("No id_project parameter");
+      return;
     } else if (Object.keys(req.body).length === 0) {
       res.status(400).json("No body parameters");
+      return;
     }
     
     const { id_project } = req.params;
@@ -123,6 +129,7 @@ export const getProjectsByStatusController = async(req: Request, res: Response) 
   try {
     if (!req.params.status) {
       res.status(400).json("No status parameter");
+      return;
     }
     
     const { status } = req.params;
@@ -146,6 +153,7 @@ export const getProjectsByOwnerController = async(req: Request, res: Response) =
   try {
     if (!req.params.id_owner) {
       res.status(400).json("No owner parameter");
+      return;
     }
     
     const { id_owner } = req.params;
@@ -162,6 +170,7 @@ export const getProjectByNameController = async(req: Request, res: Response) => 
   try {
     if (!req.params.name) {
       res.status(400).json("No name parameter");
+      return;
     }
 
     const { name } = req.params;

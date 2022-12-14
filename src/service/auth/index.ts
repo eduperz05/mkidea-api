@@ -9,7 +9,7 @@ export const login = async(username: string, password: string, userRepository: U
     if (!validPassword) {
       throw new Error("Incorrect password");
     }
-    const token = await tokenHelper.generate(user.id_user);
+    const token = await tokenHelper.generate(user.id_user, user.role);
     return token;
   }
   throw new Error("User not found");
@@ -24,6 +24,6 @@ export const register = async(userToCreate: any, userRepository: UserRepository,
   }
   userToCreate.password = passwordHelper.encrypt(userToCreate.password);
   const user = await userRepository.create(userToCreate);
-  const token = await tokenHelper.generate(user.id_user);
+  const token = await tokenHelper.generate(user.id_user, user.role);
   return token;
 };

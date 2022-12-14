@@ -11,6 +11,7 @@ export const loginController = async(req: Request, res: Response) => {
     const { username, password } = req.body;
     if (!username && !password){
       res.status(400).json("No username parameter or password parameter");
+      return;
     }
     const userRepository = new UserRepositorySequelize();
     const passwordHelper = new PasswordHelperBcrypt();
@@ -29,6 +30,7 @@ export const registerController = async(req: Request, res: Response) => {
   try {
     if (!req.body.username || !req.body.email || !req.body.password || !req.body.role) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
     }
     const userRepository = new UserRepositorySequelize();
     const passwordHelper = new PasswordHelperBcrypt();

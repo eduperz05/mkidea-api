@@ -18,6 +18,7 @@ export const getTeamController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_team) {
       res.status(400).json("No id_team parameter");
+      return;
     }
     const { id_team } = req.params;
     const teamRepository = new TeamRepositorySequelize();
@@ -44,6 +45,7 @@ export const getTeamPublicController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_team) {
       res.status(400).json("No id_team parameter");
+      return;
     }
     const { id_team } = req.params;
     const teamRepository = new TeamRepositorySequelize();
@@ -59,6 +61,7 @@ export const getTeamByProjectController = async(req: Request, res: Response) => 
   try {
     if (!req.params.id_project) {
       res.status(400).json("No id_project parameter");
+      return;
     }
     const { id_project } = req.params;
     const teamRepository = new TeamRepositorySequelize();
@@ -76,6 +79,7 @@ export const postTeamController = async(req: Request, res: Response) => {
       !req.body.id_users ||
       !req.body.role) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
     }
     const teamRepository = new TeamRepositorySequelize();
     const team = await createTeam(req.body, teamRepository);
@@ -90,6 +94,7 @@ export const deleteTeamController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_team) {
       res.status(400).json("No id_team parameter");
+      return;
     }
     const { id_team } = req.params;
     const teamRepository = new TeamRepositorySequelize();
@@ -106,8 +111,10 @@ export const changeTeamController = async(req: Request, res: Response) => {
   try {
     if (!req.params.id_team) {
       res.status(400).json("No id_user parameter");
+      return;
     } else if (Object.keys(req.body).length === 0) {
       res.status(400).json("No body parameters");
+      return;
     }
     const id_team = parseInt(req.params.id_team);
     const teamRepository = new TeamRepositorySequelize();
