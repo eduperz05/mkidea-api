@@ -1,6 +1,6 @@
 import { findUsers, findUser, findUserByUsername, findUserByEmail, createUser, deleteUser, updateUser } from ".";
 import { UserRepository } from "../../API/repositories/UserRepository";
-
+import { PasswordHelper } from "../../utils/passwordHelper";
 class UserRepositoryMock implements UserRepository {
   public findAll(): any {
     return null;
@@ -31,10 +31,21 @@ class UserRepositoryMock implements UserRepository {
   }
 }
 
+class PasswordHelperMock implements PasswordHelper {
+  public encrypt(): any {
+    return "password";
+  }
+  public compare(): any {
+    return true;
+  }
+}
+
+const passwordHelper = new PasswordHelperMock;
+
 const user = {
   username: "test",
   email: "test@mail.com",
-  toJSON: () => user,
+  toJSON: () => user ,
 };
 
 describe("findUsers", () => {
@@ -107,19 +118,19 @@ describe("createUser", () => {
   it("User already exists.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.usernameExists = jest.fn().mockReturnValue(true);
-    await expect(createUser(user, userRepository)).rejects.toThrowError("The username already exists.");
+    await expect(createUser(user, userRepository,passwordHelper)).rejects.toThrowError("The username already exists.");
   });
 
   it("Email already exists.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.emailExists = jest.fn().mockReturnValue(true);
-    await expect(createUser(user, userRepository)).rejects.toThrowError("The email already exists.");
+    await expect(createUser(user, userRepository,passwordHelper)).rejects.toThrowError("The email already exists.");
   });
 
   it("User created.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.create = jest.fn().mockReturnValue(user);
-    const result = await createUser(user, userRepository);
+    const result = await createUser(user, userRepository,passwordHelper);
     expect(result).toEqual(user);
   });
 });
