@@ -21,9 +21,10 @@ export const getProjectController = async(req: any, res: any) => {
       res.status(400).json("No id_project parameter");
     }
     const { id_project } = req.params;
+    const { id_user } = req.id_user;
     const projectRepository = new ProjectRepositorySequelize();
     const teamRepository = new TeamRepositorySequelize();
-    const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(req.id_user));
+    const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(id_user));
     if (!isOnProject) {
       res.status(401).json("User not in project");
       return;
@@ -33,7 +34,6 @@ export const getProjectController = async(req: any, res: any) => {
   } catch (err) {
     res.status(400).json(err);
   }
-
   return;
 };
 
