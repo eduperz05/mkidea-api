@@ -1,6 +1,6 @@
 import { findUsers, findUser, findUserByUsername, findUserByEmail, createUser, deleteUser, updateUser } from ".";
 import { UserRepository } from "../../API/repositories/UserRepository";
-
+import { PasswordHelper } from "../../utils/passwordHelper";
 class UserRepositoryMock implements UserRepository {
   public findAll(): any {
     return null;
@@ -23,7 +23,6 @@ class UserRepositoryMock implements UserRepository {
   public update(): any {
     return null;
   }
-
   public usernameExists(): any {
     return false;
   }
@@ -32,10 +31,28 @@ class UserRepositoryMock implements UserRepository {
   }
 }
 
+class PasswordHelperMock implements PasswordHelper {
+  public encrypt(): any {
+    return "password";
+  }
+  public compare(): any {
+    return true;
+  }
+}
+
+const passwordHelper = new PasswordHelperMock;
+
 const user = {
   username: "test",
   email: "test@mail.com",
-  toJSON: () => user,
+  password: "password",
+  toJSON: () => {
+    return {
+      username: "test",
+      email: "test@mail.com",
+      password: "password",
+    };
+  }
 };
 
 describe("findUsers", () => {
@@ -48,13 +65,17 @@ describe("findUsers", () => {
   it("should return an array of unfiltered users", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.findAll = jest.fn().mockReturnValue([user]);
-    await expect(findUsers(userRepository, false)).resolves.toEqual([user]);
+    await expect(findUsers(userRepository, false)).resolves.toEqual([user.toJSON()]);
   });
 
   it("should return an array of filtered users", async() => {
+    const filterUser = { 
+      username: "test", 
+      email: "test@mail.com", 
+    };
     const userRepository = new UserRepositoryMock();
     userRepository.findAll = jest.fn().mockReturnValue([user]);
-    await expect(findUsers(userRepository, true)).resolves.toEqual([user]);
+    await expect(findUsers(userRepository, true)).resolves.toEqual([filterUser]);
   });
 });
 
@@ -67,13 +88,17 @@ describe("findUser", () => {
   it("should return a unfiltered user", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.findByPk = jest.fn().mockReturnValue(user);
-    await expect(findUser(1, userRepository, false)).resolves.toEqual(user);
+    await expect(findUser(1, userRepository, false)).resolves.toEqual(user.toJSON());
   });
 
   it("should return a filtered user", async() => {
+    const filterUser = { 
+      username: "test", 
+      email: "test@mail.com", 
+    };
     const userRepository = new UserRepositoryMock();
     userRepository.findByPk = jest.fn().mockReturnValue(user);
-    await expect(findUser(1, userRepository, true)).resolves.toEqual(user);
+    await expect(findUser(1, userRepository, true)).resolves.toEqual(filterUser);
   });
 });
 
@@ -108,19 +133,19 @@ describe("createUser", () => {
   it("User already exists.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.usernameExists = jest.fn().mockReturnValue(true);
-    await expect(createUser(user, userRepository)).rejects.toThrowError("The username already exists.");
+    await expect(createUser(user, userRepository,passwordHelper)).rejects.toThrowError("The username already exists.");
   });
 
   it("Email already exists.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.emailExists = jest.fn().mockReturnValue(true);
-    await expect(createUser(user, userRepository)).rejects.toThrowError("The email already exists.");
+    await expect(createUser(user, userRepository,passwordHelper)).rejects.toThrowError("The email already exists.");
   });
 
   it("User created.", async() => {
     const userRepository = new UserRepositoryMock();
     userRepository.create = jest.fn().mockReturnValue(user);
-    const result = await createUser(user, userRepository);
+    const result = await createUser(user, userRepository,passwordHelper);
     expect(result).toEqual(user);
   });
 });

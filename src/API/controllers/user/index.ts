@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
+import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
 
 // TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
 
@@ -91,11 +92,15 @@ export const postUserController = async(req: Request, res: Response) => {
     if (!req.body.username || 
       !req.body.email || 
       !req.body.password || 
-      !req.body.role) {
+      !req.body.role ||
+      !req.body.phone ||
+      !req.body.about ||
+      !req.body.avatar) {
       res.status(400).json("A obligatory parameter is missing on body.");
     }
     const userRepository = new UserRepositorySequelize();
-    const user = await createUser(req.body, userRepository);
+    const passwordHelper = new PasswordHelperBcrypt();
+    const user = await createUser(req.body, userRepository, passwordHelper); 
     res.status(201).json(user);
   } catch (err: any) {
     res.status(400).json(err);

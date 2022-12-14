@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
-import { findProjectsByStatus, findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectByName } from "../../../service/project";
+import { findProjectsByStatus, findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectByName, checkUserOnProject } from "../../../service/project";
+import { TeamRepositorySequelize } from "../../repositories/TeamRepository";
 
 export const getProjectsController = async(req: Request, res: Response) => {
   try {
@@ -14,19 +15,25 @@ export const getProjectsController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getProjectController = async(req: Request, res: Response) => {
+export const getProjectController = async(req: any, res: any) => {
   try {
     if (!req.params.id_project){
       res.status(400).json("No id_project parameter");
     }
     const { id_project } = req.params;
+    const { id_user } = req.id_user;
     const projectRepository = new ProjectRepositorySequelize();
+    const teamRepository = new TeamRepositorySequelize();
+    const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(id_user));
+    if (!isOnProject) {
+      res.status(401).json("User not in project");
+      return;
+    }
     const project = await findProject(parseInt(id_project), projectRepository, false);
     res.status(200).json(project);
   } catch (err) {
     res.status(400).json(err);
   }
-
   return;
 };
 

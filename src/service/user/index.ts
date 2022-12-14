@@ -1,6 +1,7 @@
 import { UserRepository } from "../../API/repositories/UserRepository";
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsUser } from "../../config/filterFields";
+import { PasswordHelper } from "../../utils/passwordHelper";
 
 export const findUsers = async(userRepository: UserRepository, filter: boolean) => {
   const users = await userRepository.findAll();
@@ -42,14 +43,16 @@ export const findUserByEmail = async(email: string, userRepository: UserReposito
   return user; 
 };
 
-export const createUser = async(userToCreate: any, UserRepository: UserRepository) => {
-  if (await UserRepository.usernameExists(userToCreate)) {
+export const createUser = async(userToCreate: any, userRepository: UserRepository, passwordHelper: PasswordHelper) => {
+  if (await userRepository.usernameExists(userToCreate)) {
     throw new Error("The username already exists.");
   }
-  if (await UserRepository.emailExists(userToCreate)) {
+  if (await userRepository.emailExists(userToCreate)) {
     throw new Error("The email already exists.");
   }
-  const user = await UserRepository.create(userToCreate);
+  userToCreate.password = passwordHelper.encrypt(userToCreate.password);
+  const user = await userRepository.create(userToCreate);
+  
   return user;
 };
 
@@ -62,7 +65,7 @@ export const deleteUser = async(userId: number, userRepository: UserRepository) 
 }; 
 
 export const updateUser = async(userId: number, userToUpdate: any, userRepository: UserRepository) => {
-  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role"];
+  const allowedUpdates = ["username", "firstname", "lastname", "email", "password", "role", "phone", "avatar", "about"];
   const isValid_userOperation = Object.keys(userToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_userOperation) {
     throw new Error("Invalid update parameters.");
