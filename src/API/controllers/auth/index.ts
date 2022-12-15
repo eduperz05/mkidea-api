@@ -1,12 +1,12 @@
-import { Request, Response } from "express";  
-import { login, register } from "../../../service/auth";
-import { findUserByUsername } from "../../../service/user";
+import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
 import { TokenHelperJWT } from "../../../utils/tokenHelper";
+import { login, register } from "../../../service/auth";
+import { findUserByUsername } from "../../../service/user";
 
 
-export const loginController = async(req: Request, res: Response) => {
+export const loginController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const { username, password } = req.body;
     if (!username && !password){
@@ -26,7 +26,7 @@ export const loginController = async(req: Request, res: Response) => {
   return;
 };
 
-export const registerController = async(req: Request, res: Response) => {
+export const registerController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.body.username || !req.body.email || !req.body.password || !req.body.role) {
       res.status(400).json("A obligatory parameter is missing on body.");
@@ -45,7 +45,7 @@ export const registerController = async(req: Request, res: Response) => {
 };
 
 
-export const logoutController = async(req: Request, res: Response) => {
+export const logoutController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     res.clearCookie("token");
     res.status(200).json("Logout successful");

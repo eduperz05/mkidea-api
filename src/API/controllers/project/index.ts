@@ -1,4 +1,4 @@
-import { AuthRequest, AuthResponse } from "../../../types/index";
+import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
 import { TeamRepositorySequelize } from "../../repositories/TeamRepository";
 import { RoleHelperBinary } from "../../../utils/roleHelper";

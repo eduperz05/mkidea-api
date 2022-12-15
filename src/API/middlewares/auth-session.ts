@@ -1,4 +1,4 @@
-import { AuthRequest, AuthResponse, AuthNext } from "../../types";
+import { AuthRequest, AuthResponse, AuthNext } from "../../types/Auth";
 import { TokenHelperJWT } from "../../utils/tokenHelper";
 
 export const authSession = async(req: AuthRequest, res: AuthResponse, next: AuthNext) => {

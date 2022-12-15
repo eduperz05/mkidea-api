@@ -1,9 +1,8 @@
-
-import { Request, Response } from "express";
+import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { findNews, findNewsById, findNewsByTitle, createNews, deleteNews, updateNews } from "../../../service/news";
 import { NewsRepositorySequelize } from "../../repositories/NewsRepository";
 
-export const getNewsController = async(req: Request, res: Response) => {
+export const getNewsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const newsRepository = new NewsRepositorySequelize();
     const news = await findNews(newsRepository, false);
@@ -14,7 +13,7 @@ export const getNewsController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getNewsByIdController = async(req: Request, res: Response) => {
+export const getNewsByIdController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
@@ -30,7 +29,7 @@ export const getNewsByIdController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getNewsPublicController = async(req: Request, res: Response) => {
+export const getNewsPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const newsRepository = new NewsRepositorySequelize();
     const news = await findNews(newsRepository, true);
@@ -41,7 +40,7 @@ export const getNewsPublicController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getNewsByIdPublicController = async(req: Request, res: Response) => {
+export const getNewsByIdPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
@@ -57,7 +56,7 @@ export const getNewsByIdPublicController = async(req: Request, res: Response) =>
   return;
 };
 
-export const getNewsByTitleController = async(req: Request, res: Response) => {
+export const getNewsByTitleController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.title) {
       res.status(400).json("No title parameter");
@@ -73,7 +72,7 @@ export const getNewsByTitleController = async(req: Request, res: Response) => {
   return;
 };
 
-export const postNewsController = async(req: Request, res: Response) => {
+export const postNewsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.body.id_user ||
       !req.body.title || 
@@ -91,7 +90,7 @@ export const postNewsController = async(req: Request, res: Response) => {
   return;
 };
 
-export const deleteNewsController = async(req: Request, res: Response) => {
+export const deleteNewsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");
@@ -108,7 +107,7 @@ export const deleteNewsController = async(req: Request, res: Response) => {
   return;
 };
 
-export const changeNewsController = async(req: Request, res: Response) => {
+export const changeNewsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_news) {
       res.status(400).json("No id_news parameter");

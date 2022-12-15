@@ -1,13 +1,12 @@
-import { Request, Response } from "express";
-import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
+import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
-import { AuthRequest, AuthResponse } from "../../../types";
 import { RoleHelperBinary } from "../../../utils/roleHelper";
+import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 
 // TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
 
-export const getUsersController = async(req: Request, res: Response) => {
+export const getUsersController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const userRepository = new UserRepositorySequelize();
     const users = await findUsers(userRepository, false);
@@ -18,7 +17,7 @@ export const getUsersController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getUsersPublicController = async(req: Request, res: Response) => {
+export const getUsersPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const userRepository = new UserRepositorySequelize();
     const users = await findUsers(userRepository, true);
@@ -51,7 +50,7 @@ export const getUserController = async(req: AuthRequest, res: AuthResponse) => {
   return;
 };
 
-export const getUserPublicController = async(req: Request, res: Response) => {
+export const getUserPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
@@ -67,7 +66,7 @@ export const getUserPublicController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getUserByUsernameController = async(req: Request, res: Response) => {
+export const getUserByUsernameController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.username) {
       res.status(400).json("No username parameter");
@@ -83,7 +82,7 @@ export const getUserByUsernameController = async(req: Request, res: Response) =>
   return;
 };
 
-export const getUserByEmailController = async(req: Request, res: Response) => {
+export const getUserByEmailController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.email) {
       res.status(400).json("No email parameter");
@@ -99,7 +98,7 @@ export const getUserByEmailController = async(req: Request, res: Response) => {
   return;
 };
 
-export const postUserController = async(req: Request, res: Response) => {
+export const postUserController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.body.username || 
       !req.body.email || 

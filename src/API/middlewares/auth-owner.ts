@@ -1,5 +1,5 @@
+import { AuthRequest, AuthResponse, AuthNext } from "../../types/Auth";
 import { RoleHelperBinary } from "../../utils/roleHelper";
-import { AuthRequest, AuthResponse, AuthNext } from "../../types";
 
 export const authOwner = async(req: AuthRequest, res: AuthResponse, next: AuthNext) => {
   try {
