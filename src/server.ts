@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { AuthRequest, AuthResponse, AuthNext } from "./types/Auth";
 import { urlencoded } from "body-parser";
 import { userRouter } from "./API/routes/user/index";
 import { projectRouter } from "./API/routes/project/index";
@@ -39,9 +40,9 @@ app.use("/news", newsRouter);
 
 app.use((
   err: Error,
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: AuthRequest,
+  res: AuthResponse,
+  next: AuthNext
 ) => {
   if (err) {
     res.status(500).json({ error: err.message });
