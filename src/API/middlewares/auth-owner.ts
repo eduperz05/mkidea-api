@@ -5,7 +5,7 @@ export const authOwner = async(req: AuthRequest, res: AuthResponse, next: AuthNe
   try {
     const roleHelper = new RoleHelperBinary();
     const userRole = req.user.role;
-    if (!roleHelper.isOwner(userRole) || roleHelper.isAdmin(userRole)) {
+    if (!roleHelper.isOwner(userRole) && roleHelper.isAdmin(userRole)) {
       res.status(401).json("Unauthorized");
       return;
     }

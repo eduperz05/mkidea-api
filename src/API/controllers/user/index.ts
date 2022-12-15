@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
+import { AuthRequest, AuthResponse } from "../../../types";
+import { RoleHelperBinary } from "../../../utils/roleHelper";
 
 // TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
 
@@ -27,13 +29,19 @@ export const getUsersPublicController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getUserController = async(req: Request, res: Response) => {
+export const getUserController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
       return;
     }
     const { id_user } = req.params;
+    const { userId: id_user_request, role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {
+      res.status(401).json("This user has no privileges to access this information");
+      return;
+    }
     const userRepository = new UserRepositorySequelize();
     const user = await findUser(parseInt(id_user), userRepository, false);
     res.status(200).json(user);
@@ -110,13 +118,19 @@ export const postUserController = async(req: Request, res: Response) => {
   return;
 };
 
-export const deleteUserController = async(req: Request, res: Response) => {
+export const deleteUserController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
       return;
     }
     const { id_user } = req.params;
+    const { userId: id_user_request, role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
     const userRepository = new UserRepositorySequelize();
     const deletedUser = await findUser(parseInt(id_user), userRepository, false);
     await deleteUser(parseInt(id_user), userRepository);
@@ -127,7 +141,7 @@ export const deleteUserController = async(req: Request, res: Response) => {
   return;
 };
 
-export const changeUserController = async(req: Request, res: Response) => {
+export const changeUserController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_user) {
       res.status(400).json("No id_user parameter");
@@ -137,6 +151,12 @@ export const changeUserController = async(req: Request, res: Response) => {
       return;
     }
     const { id_user } = req.params;
+    const { userId: id_user_request, role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
     const userRepository = new UserRepositorySequelize();
     await updateUser(parseInt(id_user), req.body, userRepository);
     const updatedUser = await findUser(parseInt(id_user), userRepository, false);

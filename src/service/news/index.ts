@@ -1,6 +1,7 @@
 import { NewsRepository } from "../../API/repositories/NewsRepository";
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsNews } from "../../config/filterFields";
+import { allowedUpdatesNews } from "../../config/allowedUpdates";
 
 export const findNews = async(newsRepository: NewsRepository, filter: boolean) => {
   const news = await newsRepository.findAll();
@@ -47,7 +48,7 @@ export const deleteNews = async(id_news: number, newsRepository: NewsRepository)
 };
 
 export const updateNews = async(id_news: number, newsToUpdate: any, newsRepository: NewsRepository) => {
-  const allowedUpdates = ["title", "description", "url"];
+  const allowedUpdates = allowedUpdatesNews;
   const isValid_newsOperation = Object.keys(newsToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_newsOperation) {
     throw new Error("Invalid update parameters.");

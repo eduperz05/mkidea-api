@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
+import { AuthRequest, AuthResponse } from "../../../types/index";
 import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
-import { findProjectsByStatus, findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectByName, checkUserOnProject } from "../../../service/project";
 import { TeamRepositorySequelize } from "../../repositories/TeamRepository";
+import { RoleHelperBinary } from "../../../utils/roleHelper";
+import { findProjectsByStatus, findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectByName, checkUserOnProject, checkOwnerOfProject } from "../../../service/project";
 
-export const getProjectsController = async(req: Request, res: Response) => {
+export const getProjectsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjects(projectRepository, false);
@@ -15,19 +16,21 @@ export const getProjectsController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getProjectController = async(req: any, res: any) => {
+export const getProjectController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_project){
       res.status(400).json("No id_project parameter");
       return;
     }
     const { id_project } = req.params;
-    const { id_user } = req.id_user;
+    const { id_user, id_role: role_user } = req.user;
     const projectRepository = new ProjectRepositorySequelize();
     const teamRepository = new TeamRepositorySequelize();
+    const roleHelper = new RoleHelperBinary();
     const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(id_user));
-    if (!isOnProject) {
-      res.status(401).json("User not in project");
+    const isOwnerOfProject = await checkOwnerOfProject(projectRepository, parseInt(id_project), id_user);
+    if (!roleHelper.isAdmin(role_user) || !isOnProject || !isOwnerOfProject) {
+      res.status(401).json("This user has no privileges to proceed with this action");
       return;
     }
     const project = await findProject(parseInt(id_project), projectRepository, false);
@@ -38,7 +41,7 @@ export const getProjectController = async(req: any, res: any) => {
   return;
 };
 
-export const getProjectsPublicController = async(req: Request, res: Response) => {
+export const getProjectsPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjects(projectRepository, true);
@@ -50,7 +53,7 @@ export const getProjectsPublicController = async(req: Request, res: Response) =>
   return;
 };
 
-export const getProjectPublicController = async(req: Request, res: Response) => {
+export const getProjectPublicController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_project){
       res.status(400).json("No id_project parameter");
@@ -67,13 +70,19 @@ export const getProjectPublicController = async(req: Request, res: Response) => 
   return;
 };
 
-export const postProjectController = async(req: Request, res: Response) => {
+export const postProjectController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.body.name ||
       !req.body.description ||
-      !req.body.status ||
-      !req.body.id_owner) {
+      !req.body.status) {
       res.status(400).json("A obligatory parameter is missing on body.");
+      return;
+    }
+    req.body.id_owner = req.user.userId;
+    const { role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (!roleHelper.isOwner(role_user_request)) {
+      res.status(401).json("This user has no privileges to proceed with this action");
       return;
     }
     const projectRepository = new ProjectRepositorySequelize();
@@ -86,15 +95,23 @@ export const postProjectController = async(req: Request, res: Response) => {
   return;
 };
 
-export const deleteProjectController = async(req: Request, res: Response) => {
+export const deleteProjectController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_project) {
       res.status(400).json("No id_project parameter");
       return;
     }
-    
     const { id_project } = req.params;
+    const { userId: id_user_request, role: role_user_request } = req.user;
     const projectRepository = new ProjectRepositorySequelize();
+    const teamRepository = new TeamRepositorySequelize();
+    const roleHelper = new RoleHelperBinary();
+    const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(id_user_request));
+    const isOwnerOfProject = await checkOwnerOfProject(projectRepository, parseInt(id_project), id_user_request);
+    if (!roleHelper.isAdmin(role_user_request) || !isOnProject || !isOwnerOfProject) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
     const deletedProject = await findProject(parseInt(id_project), projectRepository, false);
     await deleteProject(parseInt(id_project), projectRepository);
     res.status(200).json({ deletedProject });
@@ -104,7 +121,7 @@ export const deleteProjectController = async(req: Request, res: Response) => {
   return;
 };
 
-export const updateProjectController = async(req: Request, res: Response) => {
+export const updateProjectController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.id_project) {
       res.status(400).json("No id_project parameter");
@@ -113,9 +130,17 @@ export const updateProjectController = async(req: Request, res: Response) => {
       res.status(400).json("No body parameters");
       return;
     }
-    
     const { id_project } = req.params;
+    const { userId: id_user_request, role: role_user_request } = req.user;
     const projectRepository = new ProjectRepositorySequelize();
+    const teamRepository = new TeamRepositorySequelize();
+    const roleHelper = new RoleHelperBinary();
+    const isOnProject = await checkUserOnProject(teamRepository, projectRepository, parseInt(id_project), parseInt(id_user_request));
+    const isOwnerOfProject = await checkOwnerOfProject(projectRepository, parseInt(id_project), id_user_request);
+    if (!roleHelper.isAdmin(role_user_request) || !isOnProject || !isOwnerOfProject) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
     await updateProject(parseInt(id_project), req.body, projectRepository);
     const updatedProject = await findProject(parseInt(id_project), projectRepository, false);
     res.status(200).json(updatedProject);
@@ -125,7 +150,7 @@ export const updateProjectController = async(req: Request, res: Response) => {
   return;
 };
 
-export const getProjectsByStatusController = async(req: Request, res: Response) => {
+export const getProjectsByStatusController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.status) {
       res.status(400).json("No status parameter");
@@ -148,7 +173,7 @@ export const getProjectsByStatusController = async(req: Request, res: Response) 
   return;
 };
 
-export const getProjectsByOwnerController = async(req: Request, res: Response) => {
+export const getProjectsByOwnerController = async(req: AuthRequest, res: AuthResponse) => {
   
   try {
     if (!req.params.id_owner) {
@@ -166,7 +191,7 @@ export const getProjectsByOwnerController = async(req: Request, res: Response) =
   return;
 };
 
-export const getProjectByNameController = async(req: Request, res: Response) => {
+export const getProjectByNameController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     if (!req.params.name) {
       res.status(400).json("No name parameter");

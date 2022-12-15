@@ -1,6 +1,7 @@
 import { TeamRepository } from "../../API/repositories/TeamRepository";
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsTeam } from "../../config/filterFields";
+import { allowedUpdatesTeam } from "../../config/allowedUpdates";
 
 
 export const findTeams = async(teamRepository: TeamRepository, filter: boolean) => {
@@ -64,10 +65,22 @@ export const updateUserOnTeam = async(teamId: number, teamToUpdate: any, teamRep
   if (!team) {
     throw new Error("Team Id not found.");
   }
-  const allowedUpdates = ["role"];
+  const allowedUpdates = allowedUpdatesTeam;
   const isValid_teamOperation = Object.keys(teamToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_teamOperation) {
     throw new Error("Invalid update parameters.");
   }
   await teamRepository.update(teamId, teamToUpdate);
+};
+
+export const userOnTeam = async(userId: number, projectId: number, teamRepository: TeamRepository) => {
+  const team = {
+    id_project: projectId,
+    id_users: userId
+  };
+  const isOnTeam = await teamRepository.isUserOnTeam(team);
+  if (!isOnTeam) {
+    throw new Error("User not on team.");
+  }
+  return isOnTeam;
 };
