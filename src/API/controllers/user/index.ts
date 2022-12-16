@@ -2,6 +2,7 @@ import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { UserRepositorySequelize } from "../../repositories/UserRepository";
 import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
 import { RoleHelperBinary } from "../../../utils/roleHelper";
+import { validateEmail } from "../../../utils/validateEmail";
 import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
 
 // TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
@@ -107,10 +108,16 @@ export const postUserController = async(req: AuthRequest, res: AuthResponse) => 
       res.status(400).json("A obligatory parameter is missing on body.");
       return;
     }
+    if (req.body.email && !validateEmail(req.body.email)){
+      res.status(400).json("Email is not valid.");
+      return;
+    }
+    
     const userRepository = new UserRepositorySequelize();
     const passwordHelper = new PasswordHelperBcrypt();
     const user = await createUser(req.body, userRepository, passwordHelper); 
     res.status(201).json(user);
+    return;
   } catch (err: any) {
     res.status(400).json(err.message);
   }
@@ -154,6 +161,10 @@ export const changeUserController = async(req: AuthRequest, res: AuthResponse) =
     const roleHelper = new RoleHelperBinary();
     if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {
       res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
+    if (req.body.email && !validateEmail(req.body.email)){
+      res.status(400).json("Email is not valid.");
       return;
     }
     const userRepository = new UserRepositorySequelize();
