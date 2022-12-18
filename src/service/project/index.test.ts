@@ -43,7 +43,10 @@ class ProjectRepositoryMock implements ProjectRepository {
 const project = {
   name: "test",
   description: "test",
-  toJSON: () => project,
+  toJSON: () => {return {
+    name: "test",
+    description: "test",
+  };}
 };
 
 describe("findProjects", () => {
@@ -56,13 +59,13 @@ describe("findProjects", () => {
   it("should return an array of unfiltered projects", async() => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findAll = jest.fn().mockReturnValue([project]);
-    await expect(findProjects(projectRepository, false)).resolves.toEqual([project]);
+    await expect(findProjects(projectRepository, false)).resolves.toEqual([project.toJSON()]);
   });
 
   it("should return an array of filtered projects", async() => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findAll = jest.fn().mockReturnValue([project]);
-    await expect(findProjects(projectRepository, true)).resolves.toEqual([project]);
+    await expect(findProjects(projectRepository, true)).resolves.toEqual([project.toJSON()]);
   });
 });
 
@@ -75,13 +78,13 @@ describe("findProject", () => {
   it("should return a unfiltered project", async() => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
-    await expect(findProject(1, projectRepository, false)).resolves.toEqual(project);
+    await expect(findProject(1, projectRepository, false)).resolves.toEqual(project.toJSON());
   });
   
   it("should return a filtered project", async() => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
-    await expect(findProject(1, projectRepository, true)).resolves.toEqual(project);
+    await expect(findProject(1, projectRepository, true)).resolves.toEqual(project.toJSON());
   });
 });
 
