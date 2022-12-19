@@ -29,9 +29,14 @@ describe("findProjects", () => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findAll = jest.fn().mockReturnValue([project]);
     await expect(findProjects(projectRepository, false)).resolves.toEqual([project.toJSON()]);
+    await expect(findProjects(projectRepository, false)).resolves.toEqual([project.toJSON()]);
   });
 
   it("should return an array of filtered projects", async() => {
+    const filterProject = {
+      name: "test",
+      description: "test",
+    };
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findAll = jest.fn().mockReturnValue([project]);
     await expect(findProjects(projectRepository, true)).resolves.toEqual([project.toJSON()]);
@@ -48,9 +53,14 @@ describe("findProject", () => {
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
     await expect(findProject(1, projectRepository, false)).resolves.toEqual(project.toJSON());
+    await expect(findProject(1, projectRepository, false)).resolves.toEqual(project.toJSON());
   });
   
   it("should return a filtered project", async() => {
+    const filterProject = {
+      name: "test",
+      description: "test",
+    };
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
     await expect(findProject(1, projectRepository, true)).resolves.toEqual(project.toJSON());

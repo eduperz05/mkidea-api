@@ -41,6 +41,12 @@ const news = {
       description: "descripcion de prueba",
     };
   }
+  toJSON: () => {
+    return {
+      title: "test",
+      description: "descripcion de prueba",
+    };
+  }
 };
 
 describe("findNews", () => {
@@ -53,8 +59,13 @@ describe("findNews", () => {
     const newsRepository = new NewsRepositoryMock();
     newsRepository.findAll = jest.fn().mockReturnValue([news]);
     await expect(findNews(newsRepository, false)).resolves.toEqual([news.toJSON()]);
+    await expect(findNews(newsRepository, false)).resolves.toEqual([news.toJSON()]);
   });
   it("should return an array of filtered news", async() => {
+    const filteredNews = {
+      title: "test",
+      description: "descripcion de prueba",
+    };
     const newsRepository = new NewsRepositoryMock();
     newsRepository.findAll = jest.fn().mockReturnValue([news]);
     await expect(findNews(newsRepository, true)).resolves.toEqual([news.toJSON()]);
@@ -71,8 +82,13 @@ describe("findNewsById", () => {
     const newsRepository = new NewsRepositoryMock();
     newsRepository.findByPk = jest.fn().mockReturnValue(news);
     await expect(findNewsById(1,newsRepository, false)).resolves.toEqual(news.toJSON());
+    await expect(findNewsById(1,newsRepository, false)).resolves.toEqual(news.toJSON());
   });
   it("should return an array of filtered news", async() => {
+    const filteredNews = {
+      title: "test",
+      description: "descripcion de prueba",
+    };
     const newsRepository = new NewsRepositoryMock();
     newsRepository.findByPk = jest.fn().mockReturnValue(news);
     await expect(findNewsById(1,newsRepository, true)).resolves.toEqual(news.toJSON());

@@ -24,9 +24,14 @@ describe("findTeams", () => {
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findAll = jest.fn().mockReturnValue([team]);
     await expect(findTeams(teamRepository, false)).resolves.toEqual([team.toJSON()]);
+    await expect(findTeams(teamRepository, false)).resolves.toEqual([team.toJSON()]);
   });
 
   it("Should return an array of filtered teams", async() => {
+    const filterTeam = {
+      id_project: 1,
+      id_users: 1,
+    };
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findAll = jest.fn().mockReturnValue([team]);
     await expect(findTeams(teamRepository, true)).resolves.toEqual([team.toJSON()]);
@@ -43,9 +48,14 @@ describe("findTeamByPk", () => {
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findByPk = jest.fn().mockReturnValue(team);
     await expect(findTeamByPk(1, teamRepository, false)).resolves.toEqual(team.toJSON());
+    await expect(findTeamByPk(1, teamRepository, false)).resolves.toEqual(team.toJSON());
   });
   
   it("Should return a filtered team", async() => {
+    const filterTeam = {
+      id_project: 1,
+      id_users: 1,
+    };
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findByPk = jest.fn().mockReturnValue(team);
     await expect(findTeamByPk(1, teamRepository, true)).resolves.toEqual(team.toJSON());

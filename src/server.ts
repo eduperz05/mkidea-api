@@ -16,10 +16,15 @@ import { authSession } from "./API/middlewares/auth-session";
 import { authAdmin } from "./API/middlewares/auth-admin";
 
 const app = express();
+const corsOptions = {
+  origin: "http://localhost:5173",
+  optionSuccessStatus: 200,
+  credentials: true,
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-app.use(cors());
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("MKIdea API!");
@@ -27,7 +32,7 @@ app.get("/", (req, res) => {
 
 // app.use(middlewareAuth);
 app.use("/auth", authRouter);
-app.use("/public/use", userRouterPublic);
+app.use("/public/user", userRouterPublic);
 app.use("/public/project", projectRouterPublic);
 app.use("/public/team", teamRouterPublic);
 app.use("/public/news", newsRouterPublic);
