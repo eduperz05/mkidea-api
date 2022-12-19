@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 // app.use(middlewareAuth);
 app.use("/auth", authRouter);
-app.use("/public/use", userRouterPublic);
+app.use("/public/user", userRouterPublic);
 app.use("/public/project", projectRouterPublic);
 app.use("/public/team", teamRouterPublic);
 app.use("/public/news", newsRouterPublic);
