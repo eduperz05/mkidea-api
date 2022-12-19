@@ -1,7 +1,7 @@
 name: Test code, build Containers for Production, push to Dockerhub & deploy into DigitalOcean Droplet.
 
 on: 
-  pull_request:
+  push:
     branches:
       - main
 
