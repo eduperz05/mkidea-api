@@ -40,6 +40,10 @@ class PasswordHelperMock implements PasswordHelper {
   public compare(): any {
     return true;
   }
+
+  public validator(): any {
+    return true;
+  }
 }
 
 export class TokenHelperMock implements TokenHelper {
