@@ -3,6 +3,7 @@ import { ProjectRepository } from "../../API/repositories/ProjectRepository";
 import { filterModel } from "../../utils/filterModels";
 import { filterFieldsProject } from "../../config/filterFields";
 import { TeamRepository } from "../../API/repositories/TeamRepository";
+import { allowedUpdatesProject } from "../../config/allowedUpdates";
 
 export const findProjects = async(projectRepository: ProjectRepository, filter: boolean) => {
   const projects = await projectRepository.findAll();
@@ -28,6 +29,27 @@ export const findProject = async(projectId: number, projectRepository: ProjectRe
   return projectJsoned;
 }; 
 
+export const findProjectsByStatus = async(status: string, projectRepository: ProjectRepository) => {
+  const validStatus = ["active", "inactive"];
+  const isValidStatus = validStatus.includes(status);
+  if (!isValidStatus){
+    throw new Error("Invalid status.");
+  }
+  const projects = await projectRepository.findByStatus(status);
+  if (projects.length === 0){
+    throw new Error("No projects found for this status.");
+  }
+  return projects;
+};
+
+export const findProjectByName = async(name: string, projectRepository: ProjectRepository) => {
+  const project = await projectRepository.projectByName(name);
+  if (project === null){
+    throw new Error("No project found with this name.");
+  }
+  return project;
+};
+
 export const createProject = async(projectToCreate: any, projectRepository: ProjectRepository) => {
   if (await projectRepository.projectExists(projectToCreate)){
     throw new Error("Project already exists.");
@@ -50,7 +72,7 @@ export const updateProject = async(projectId: any, projectToUpdate: any, project
   if (!project){
     throw new Error("Project not found!");
   }
-  const allowedUpdates = ["name", "description", "id_owner", "status"];
+  const allowedUpdates = allowedUpdatesProject;
   const isValid_projectOperation = Object.keys(projectToUpdate).every((update) => allowedUpdates.includes(update));
   if (!isValid_projectOperation){
     throw new Error("Invalid parameters.");
@@ -66,26 +88,6 @@ export const findProjectsByOwner = async(ownerId: number, projectRepository: Pro
   return projects;
 };
 
-export const findProjectsByStatus = async(status: string, projectRepository: ProjectRepository) => {
-  const validStatus = ["active", "inactive"];
-  const isValidStatus = validStatus.includes(status);
-  if (!isValidStatus){
-    throw new Error("Invalid status.");
-  }
-  const projects = await projectRepository.findByStatus(status);
-  if (projects.length === 0){
-    throw new Error("No projects found for this status.");
-  }
-  return projects;
-};
-
-export const findProjectByName = async(name: string, projectRepository: ProjectRepository) => {
-  const project = await projectRepository.projectByName(name);
-  if (project === null){
-    throw new Error("No project found with this name.");
-  }
-  return project;
-};
 
 export const checkUserOnProject = async(teamRepository: TeamRepository, projectRepository: ProjectRepository, projectId: number, userId: number) => {
   const team = await teamRepository.findByIdProject(projectId);
@@ -97,4 +99,12 @@ export const checkUserOnProject = async(teamRepository: TeamRepository, projectR
     throw new Error("No project found.");
   }
   return team.some((user) => user.id_users === userId);
+};
+
+export const checkOwnerOfProject = async(projectRepository: ProjectRepository, projectId: number, ownerId: number) => {
+  const project = await projectRepository.findByPk(projectId);
+  if (project === null){
+    throw new Error("No project found.");
+  }
+  return project.id_owner === ownerId;
 };

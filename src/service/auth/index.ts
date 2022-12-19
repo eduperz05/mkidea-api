@@ -9,7 +9,7 @@ export const login = async(username: string, password: string, userRepository: U
     if (!validPassword) {
       throw new Error("Incorrect password");
     }
-    const token = await tokenHelper.generate(user.id_user);
+    const token = await tokenHelper.generate(user.id_user, user.role);
     return token;
   }
   throw new Error("User not found");
@@ -23,7 +23,10 @@ export const register = async(userToCreate: any, userRepository: UserRepository,
     throw new Error("The email already exists.");
   }
   userToCreate.password = passwordHelper.encrypt(userToCreate.password);
+  if (!userToCreate.password) {
+    throw new Error("The password is not valid.");
+  }
   const user = await userRepository.create(userToCreate);
-  const token = await tokenHelper.generate(user.id_user);
+  const token = await tokenHelper.generate(user.id_user, user.role);
   return token;
 };

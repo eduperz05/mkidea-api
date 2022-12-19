@@ -38,6 +38,10 @@ class PasswordHelperMock implements PasswordHelper {
   public compare(): any {
     return true;
   }
+
+  public validator(): any {
+    return true;
+  }
 }
 
 const passwordHelper = new PasswordHelperMock;

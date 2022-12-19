@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 // dotenv.config();
 
 export interface TokenHelper {
-  generate(userId: number): Promise<string>;
+  generate(userId: number, role: number): Promise<string>;
   decode(token: string): any | boolean;
 }
 
@@ -15,9 +15,9 @@ export class TokenHelperJWT implements TokenHelper {
     this.SECRET_KEY = process.env.SECRET_KEY;
   }
 
-  public async generate(userId: number): Promise<string> {
+  public async generate(userId: number, role: number): Promise<string> {
     return new Promise((resolve: any, reject: any) => {
-      const payload = { userId };
+      const payload = { userId, role };
       if (!this.SECRET_KEY) {
         throw new Error("Password is undefined");
       }
