@@ -1,11 +1,12 @@
 name: Test code, build Containers for Production, push to Dockerhub & deploy into DigitalOcean Droplet.
 
 on: 
-  workflow_dispatch:
-    status:
-      branches: [main]
-      context:
-        - Continious integration/backend-tests
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
   test-back: #job1
