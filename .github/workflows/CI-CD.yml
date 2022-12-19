@@ -1,12 +1,10 @@
 name: Test code, build Containers for Production, push to Dockerhub & deploy into DigitalOcean Droplet.
 
 on: 
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
+      - develop
 
 jobs:
   test-back: #job1
@@ -25,15 +23,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Setup   
-        run: npm ci
+        run: npm install
 
       - name: Run tests
         run: npm run test
 
   build-and-deploy-back: #job2
-    needs: test-back
-    name: Build and Deploy Back
     runs-on: ubuntu-latest
+    needs: test-back
+    if: github.ref == 'refs/heads/main'
+    name: Build and Deploy Back
     steps:
       - name: Checkout
         uses: actions/checkout@v2
