@@ -22,9 +22,9 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("MKIdea API!");
