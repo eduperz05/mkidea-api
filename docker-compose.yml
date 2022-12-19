@@ -1,0 +1,25 @@
+version: '3'
+services:
+  db:
+    container_name: mkidea-db
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.env:/app/.env
+      - server-dir/mkidea-data:/var/lib/mysql
+    restart: always
+  backend:
+    image: mkidea-api:0.0.1
+    environment:
+      - DB_HOST=mkidea-db
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      - db
+    restart: always
