@@ -1,40 +1,5 @@
 import { findTeams, findTeamByPk, findTeamByProject, findTeamsByUser, createTeam, deleteTeam, updateUserOnTeam } from ".";
-import { TeamRepository } from "../../API/repositories/TeamRepository";
-
-class TeamRepositoryMock implements TeamRepository {
-
-  public findAll(): any {
-    return null;
-  }
-
-  public findByPk(): any {
-    return null;
-  }
-
-  public findByIdProject(): any {
-    return null;
-  }
-
-  public findByIdUser(): any {
-    return null;
-  }
-
-  public create(): any {
-    return null;
-  }
-
-  public destroy(): any {
-    return;
-  }
-
-  public update(): any {
-    return null;
-  }
-
-  public isUserOnTeam(): any {
-    return false;
-  }
-}
+import { TeamRepositoryMock } from "../../__test_/mock/mockedClass";
 
 const team = {
   id_project: 1,

@@ -1,44 +1,6 @@
-import { ProjectRepository } from "../../API/repositories/ProjectRepository";
-import { findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectsByStatus, findProjectByName } from ".";
-
-class ProjectRepositoryMock implements ProjectRepository {
-
-  public findAll(): any {
-    return null;
-  }
-
-  public findByPk(): any {
-    return null;
-  }
-
-  public create(): any {
-    return null;
-  }
-
-  public destroy(): any {
-    return null;
-  }
-
-  public update(): any {
-    return null;
-  }
-
-  public findByOwner(): any {
-    return [];
-  }
-
-  public findByStatus(): any {
-    return [];
-  }
-
-  public projectExists(): any {
-    return false;
-  }
-
-  public projectByName(): any {
-    return null;
-  }
-}
+import { ProjectRepositoryMock } from "../../__test_/mock/mockedClass";
+import { findProjects, findProject, createProject, deleteProject, updateProject, findProjectsByOwner, findProjectsByStatus, findProjectByName, checkUserOnProject, checkOwnerOfProject } from ".";
+import { TeamRepositoryMock } from "../../__test_/mock/mockedClass";
 
 const project = {
   name: "test",
@@ -47,6 +9,13 @@ const project = {
     name: "test",
     description: "test",
   };}
+};
+
+const team = {
+  id_team: 1,
+  id_project: 1,
+  id_users: 1,
+  some: () => true,
 };
 
 describe("findProjects", () => {
@@ -158,6 +127,43 @@ describe("findProjectByName", () => {
   it("should return an error if the project is not found", async() => {
     const projectRepository = new ProjectRepositoryMock();
     await expect(findProjectByName("test", projectRepository)).rejects.toThrowError("No project found with this name.");
+  });
+
+  it("should return a project", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    projectRepository.projectByName = jest.fn().mockReturnValue(project);
+    await expect(findProjectByName("test", projectRepository)).resolves.toEqual(project);
+  });
+});
+
+describe("checkUserOnProject", () => {
+  it("should return an error if the project is not found", async() => {
+    const teamRepository = new TeamRepositoryMock();
+    const projectRepository = new ProjectRepositoryMock();
+    teamRepository.findByIdProject = jest.fn().mockReturnValue([]);
+    await expect(checkUserOnProject(teamRepository, projectRepository, 1, 1)).rejects.toThrowError("No team found for this project.");
+  });
+
+  it("should return a project", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    const teamRepository = new TeamRepositoryMock();
+    teamRepository.findByIdProject = jest.fn().mockReturnValue(team);
+    await expect(checkUserOnProject(teamRepository, projectRepository, 1, 1)).rejects.toThrowError("No project found.");
+  });
+
+  it("should return a project", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    const teamRepository = new TeamRepositoryMock();
+    teamRepository.findByIdProject = jest.fn().mockReturnValue(team);
+    projectRepository.findByPk = jest.fn().mockReturnValue(project);
+    await expect(checkUserOnProject(teamRepository, projectRepository, 1, 1)).resolves.toEqual(true);
+  });
+});
+
+describe("checkOwnerProject", () => {
+  it("should return an error if the project is not found", async() => {
+    const projectRepository = new ProjectRepositoryMock();
+    await expect(checkOwnerOfProject(projectRepository , 1, 1)).rejects.toThrowError("No project found.");
   });
 
   it("should return a project", async() => {

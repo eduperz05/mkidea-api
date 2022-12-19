@@ -104,6 +104,14 @@ describe("register", () => {
     userRepository.emailExists = jest.fn().mockReturnValue(true);
     await expect(register(user, userRepository,passwordHelper,tokenHelper)).rejects.toThrowError("The email already exists.");
   });
+  it("should throw an error if the password is not valid", async() => {
+    const passwordHelper = new PasswordHelperMock;
+    const userRepository = new UserRepositoryMock;
+    const tokenHelper = new TokenHelperMock;
+    passwordHelper.encrypt = jest.fn().mockReturnValue(false);
+    await expect(register(user, userRepository,passwordHelper,tokenHelper)).rejects.toThrowError("The password is not valid.");
+  });
+  
   it("should return the token", async() => {
     const passwordHelper = new PasswordHelperMock;
     const userRepository = new UserRepositoryMock;
