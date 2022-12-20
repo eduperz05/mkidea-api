@@ -4,6 +4,7 @@ import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
 import { TokenHelperJWT } from "../../../utils/tokenHelper";
 import { login, register } from "../../../service/auth";
 import { findUserByUsername } from "../../../service/user";
+import { cookieOptions } from "../../../config/cookieOptions";
 
 
 export const loginController = async(req: AuthRequest, res: AuthResponse) => {
@@ -18,7 +19,7 @@ export const loginController = async(req: AuthRequest, res: AuthResponse) => {
     const tokenHelper = new TokenHelperJWT();
     const user = await findUserByUsername(username, userRepository);
     const token = await login(username, password, userRepository, passwordHelper, tokenHelper);
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie(process.env.COOKIE_NAME, token, cookieOptions);
     res.status(200).json({ user });
   } catch (err: any) {
     res.status(400).json(err.message);
@@ -36,7 +37,7 @@ export const registerController = async(req: AuthRequest, res: AuthResponse) => 
     const passwordHelper = new PasswordHelperBcrypt();
     const tokenHelper = new TokenHelperJWT();
     const token = await register(req.body, userRepository, passwordHelper, tokenHelper);
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie(process.env.COOKIE_NAME, token, cookieOptions);
     res.status(200).json("User created");
   } catch (err: any) {
     res.status(400).json(err.message);
@@ -47,7 +48,7 @@ export const registerController = async(req: AuthRequest, res: AuthResponse) => 
 
 export const logoutController = async(req: AuthRequest, res: AuthResponse) => {
   try {
-    res.clearCookie("token");
+    res.clearCookie(process.env.COOKIE_NAME);
     res.status(200).json("Logout successful");
   } catch (err: any) {
     res.status(400).json(err.message);
