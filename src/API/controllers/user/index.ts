@@ -38,6 +38,7 @@ export const getUserController = async(req: AuthRequest, res: AuthResponse) => {
     const { id_user } = req.params;
     const { userId: id_user_request, role: role_user_request } = req.user;
     const roleHelper = new RoleHelperBinary();
+    console.log(id_user_request, role_user_request);
     if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {
       res.status(401).json("This user has no privileges to access this information");
       return;
