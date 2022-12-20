@@ -3,9 +3,11 @@ import { findProjects, findProject, createProject, deleteProject, updateProject,
 import { TeamRepositoryMock } from "../../__test_/mock/mockedClass";
 
 const project = {
+  id_owner: 1,
   name: "test",
   description: "test",
   toJSON: () => {return {
+    id_owner: 1,
     name: "test",
     description: "test",
   };}
@@ -33,10 +35,6 @@ describe("findProjects", () => {
   });
 
   it("should return an array of filtered projects", async() => {
-    const filterProject = {
-      name: "test",
-      description: "test",
-    };
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findAll = jest.fn().mockReturnValue([project]);
     await expect(findProjects(projectRepository, true)).resolves.toEqual([project.toJSON()]);
@@ -57,10 +55,6 @@ describe("findProject", () => {
   });
   
   it("should return a filtered project", async() => {
-    const filterProject = {
-      name: "test",
-      description: "test",
-    };
     const projectRepository = new ProjectRepositoryMock();
     projectRepository.findByPk = jest.fn().mockReturnValue(project);
     await expect(findProject(1, projectRepository, true)).resolves.toEqual(project.toJSON());
@@ -176,9 +170,11 @@ describe("checkOwnerProject", () => {
     await expect(checkOwnerOfProject(projectRepository , 1, 1)).rejects.toThrowError("No project found.");
   });
 
-  it("should return a project", async() => {
+  it("should return a true if id_owner equals to ownerId", async() => {
     const projectRepository = new ProjectRepositoryMock();
-    projectRepository.projectByName = jest.fn().mockReturnValue(project);
-    await expect(findProjectByName("test", projectRepository)).resolves.toEqual(project);
+    const teamRepository = new TeamRepositoryMock();
+    teamRepository.findByIdProject = jest.fn().mockReturnValue(team);
+    projectRepository.findByPk = jest.fn().mockReturnValue(project);
+    await expect(checkOwnerOfProject(projectRepository , 1, 1)).resolves.toEqual(true);
   });
 });

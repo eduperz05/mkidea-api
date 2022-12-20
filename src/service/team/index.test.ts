@@ -1,4 +1,4 @@
-import { findTeams, findTeamByPk, findTeamByProject, findTeamsByUser, createTeam, deleteTeam, updateUserOnTeam } from ".";
+import { findTeams, findTeamByPk, findTeamByProject, findTeamsByUser, createTeam, deleteTeam, updateUserOnTeam, userOnTeam } from ".";
 import { TeamRepositoryMock } from "../../__test_/mock/mockedClass";
 
 const team = {
@@ -28,10 +28,6 @@ describe("findTeams", () => {
   });
 
   it("Should return an array of filtered teams", async() => {
-    const filterTeam = {
-      id_project: 1,
-      id_users: 1,
-    };
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findAll = jest.fn().mockReturnValue([team]);
     await expect(findTeams(teamRepository, true)).resolves.toEqual([team.toJSON()]);
@@ -52,10 +48,6 @@ describe("findTeamByPk", () => {
   });
   
   it("Should return a filtered team", async() => {
-    const filterTeam = {
-      id_project: 1,
-      id_users: 1,
-    };
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findByPk = jest.fn().mockReturnValue(team);
     await expect(findTeamByPk(1, teamRepository, true)).resolves.toEqual(team.toJSON());
@@ -122,5 +114,18 @@ describe("updateUserOnTeam", () => {
     const teamRepository = new TeamRepositoryMock();
     teamRepository.findByPk = jest.fn().mockReturnValue(team);
     await expect(updateUserOnTeam(1, team, teamRepository)).rejects.toThrowError("Invalid update parameters.");
+  });
+});
+
+describe("userOnTeam", () => {
+  it("Should return an error if the team_id is not found", async() => {
+    const teamRepository = new TeamRepositoryMock();
+    await expect(userOnTeam(1, 1, teamRepository)).rejects.toThrowError("User not on team.");
+  });
+
+  it("Should return an error if the params are not valid", async() => {
+    const teamRepository = new TeamRepositoryMock();
+    teamRepository.isUserOnTeam = jest.fn().mockReturnValue(true);
+    await expect(userOnTeam(1, 1, teamRepository)).resolves.toEqual(true);
   });
 });
