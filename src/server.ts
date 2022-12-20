@@ -20,6 +20,7 @@ const corsOptions = {
   origin: "http://localhost:5173",
   optionSuccessStatus: 200,
   credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
 app.use(cors(corsOptions));
