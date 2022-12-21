@@ -60,6 +60,6 @@ jobs:
           password: ${{ secrets.DO_PASSWORD }}
           script: |
             cd mkidea-api
-            docker image prune -a
+            docker image prune -af
             docker compose pull
             docker compose up -d --force-recreate
