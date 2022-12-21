@@ -29,7 +29,7 @@ export class Project extends Model<Project> {
 
   @Column({
     type: DataType.ENUM,
-    values: ["active", "pending", "deleted"],
+    values: ["active", "pending", "completed", "deleted"],
     allowNull: false,
   })
     status!: string;

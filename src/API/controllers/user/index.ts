@@ -35,7 +35,10 @@ export const getUserController = async(req: AuthRequest, res: AuthResponse) => {
       res.status(400).json("No id_user parameter");
       return;
     }
-    const { id_user } = req.params;
+    let { id_user } = req.params;
+    if (id_user === "me") {
+      id_user = req.user.userId;
+    }
     const { userId: id_user_request, role: role_user_request } = req.user;
     const roleHelper = new RoleHelperBinary();
     if (parseInt(id_user) !== id_user_request && !roleHelper.isAdmin(role_user_request)) {

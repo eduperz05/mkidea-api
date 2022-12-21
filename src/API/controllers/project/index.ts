@@ -180,8 +180,10 @@ export const getProjectsByOwnerController = async(req: AuthRequest, res: AuthRes
       res.status(400).json("No owner parameter");
       return;
     }
-    
-    const { id_owner } = req.params;
+    let { id_owner } = req.params;
+    if (id_owner === "me") {
+      id_owner = req.user.userId;
+    }
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjectsByOwner(parseInt(id_owner), projectRepository);
     res.status(200).json(projects);
