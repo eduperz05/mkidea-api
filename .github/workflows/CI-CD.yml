@@ -1,6 +1,6 @@
 name: Test code, build Containers for Production, push to Dockerhub & deploy into DigitalOcean Droplet.
 
-on: 
+on:
   push:
     branches:
       - main
@@ -13,8 +13,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 15.x, 16.x, 18.x]
-    
+        node-version: [16.x, 18.x]
+
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Setup   
+      - name: Setup
         run: npm install
 
       - name: Run tests

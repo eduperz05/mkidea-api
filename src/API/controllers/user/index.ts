@@ -3,7 +3,7 @@ import { UserRepositorySequelize } from "../../repositories/UserRepository";
 import { PasswordHelperBcrypt } from "../../../utils/passwordHelper";
 import { RoleHelperBinary } from "../../../utils/roleHelper";
 import { validateEmail } from "../../../utils/validateEmail";
-import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail } from "../../../service/user";
+import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail, updatePassword } from "../../../service/user";
 
 // TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
 
@@ -172,6 +172,38 @@ export const changeUserController = async(req: AuthRequest, res: AuthResponse) =
     }
     const userRepository = new UserRepositorySequelize();
     await updateUser(parseInt(id_user), req.body, userRepository);
+    const updatedUser = await findUser(parseInt(id_user), userRepository, false);
+    res.status(200).json(updatedUser);
+  } catch (err: any) {
+    res.status(400).json(err.message);
+  }
+  return;
+};
+
+export const changePasswordController = async(req: AuthRequest, res: AuthResponse) => {
+  try {
+    console.log(req.body);
+    if (!req.params.id_user) {
+      res.status(400).json("No id_user parameter");
+      return;
+    } 
+    if (!req.body.password.currentPassword || !req.body.password.newPassword) {
+      res.status(400).json("No password parameter");
+      return;
+    }
+    let { id_user } = req.params;
+    if (id_user === "me") {
+      id_user = req.user.userId;
+    }
+    const { userId: id_user_request, role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (parseInt(id_user) !== id_user_request || !roleHelper.isAdmin(role_user_request)) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
+    const userRepository = new UserRepositorySequelize();
+    const passwordHelper = new PasswordHelperBcrypt();
+    await updatePassword(parseInt(id_user), req.body.password, userRepository, passwordHelper);
     const updatedUser = await findUser(parseInt(id_user), userRepository, false);
     res.status(200).json(updatedUser);
   } catch (err: any) {
