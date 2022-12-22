@@ -23,7 +23,7 @@ export const getProjectController = async(req: AuthRequest, res: AuthResponse) =
       return;
     }
     const { id_project } = req.params;
-    const { id_user, id_role: role_user } = req.user;
+    const { userId: id_user, role: role_user } = req.user;
     const projectRepository = new ProjectRepositorySequelize();
     const teamRepository = new TeamRepositorySequelize();
     const roleHelper = new RoleHelperBinary();
