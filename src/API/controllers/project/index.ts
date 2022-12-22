@@ -23,7 +23,7 @@ export const getProjectController = async(req: AuthRequest, res: AuthResponse) =
       return;
     }
     const { id_project } = req.params;
-    const { id_user, id_role: role_user } = req.user;
+    const { userId: id_user, role: role_user } = req.user;
     const projectRepository = new ProjectRepositorySequelize();
     const teamRepository = new TeamRepositorySequelize();
     const roleHelper = new RoleHelperBinary();
@@ -180,8 +180,10 @@ export const getProjectsByOwnerController = async(req: AuthRequest, res: AuthRes
       res.status(400).json("No owner parameter");
       return;
     }
-    
-    const { id_owner } = req.params;
+    let { id_owner } = req.params;
+    if (id_owner === "me") {
+      id_owner = req.user.userId;
+    }
     const projectRepository = new ProjectRepositorySequelize();
     const projects = await findProjectsByOwner(parseInt(id_owner), projectRepository);
     res.status(200).json(projects);
