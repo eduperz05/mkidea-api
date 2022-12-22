@@ -59,10 +59,7 @@ jobs:
           username: ${{ secrets.DO_USERNAME }}
           password: ${{ secrets.DO_PASSWORD }}
           script: |
-            docker kill $(docker ps -q)
-            docker rm $(docker ps -a -q)
-            docker rmi $(docker images -q)
             cd mkidea-api
             docker compose pull
-            docker compose down || true
-            docker compose up -d
+            docker compose up -d --force-recreate
+            docker image prune -af
