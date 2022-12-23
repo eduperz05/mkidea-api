@@ -3,7 +3,7 @@ import { TeamRepositorySequelize } from "../../repositories/TeamRepository";
 import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
 import { RoleHelperBinary } from "../../../utils/roleHelper";
 import { findTeams, findTeamByPk, findTeamByProject, findTeamsByUser, createTeam, deleteTeam, updateUserOnTeam, userOnTeam } from "../../../service/team";
-import { checkOwnerOfProject } from "../../../service/project";
+import { findProject, checkOwnerOfProject } from "../../../service/project";
 
 export const getTeamsController = async(req: AuthRequest, res: AuthResponse) => {
   try {
@@ -104,7 +104,11 @@ export const getTeamByUserController = async(req: AuthRequest, res: AuthResponse
     }
     const teamRepository = new TeamRepositorySequelize();
     const teams = await findTeamsByUser(parseInt(id_user), teamRepository);
-    res.status(200).json(teams);
+    const projectRepository = new ProjectRepositorySequelize();
+    const projects = await Promise.all(teams.map(async(team) => {
+      return findProject(team.id_project, projectRepository, false);
+    }));
+    res.status(200).json(projects);
   } catch (err: any) {
     res.status(400).json(err.message);
   }
