@@ -2,7 +2,7 @@ import { AuthRequest, AuthResponse } from "../../../types/Auth";
 import { TeamRepositorySequelize } from "../../repositories/TeamRepository";
 import { ProjectRepositorySequelize } from "../../repositories/ProjectRepository";
 import { RoleHelperBinary } from "../../../utils/roleHelper";
-import { findTeams, findTeamByPk, findTeamByProject, createTeam, deleteTeam, updateUserOnTeam, userOnTeam } from "../../../service/team";
+import { findTeams, findTeamByPk, findTeamByProject, findTeamsByUser, createTeam, deleteTeam, updateUserOnTeam, userOnTeam } from "../../../service/team";
 import { checkOwnerOfProject } from "../../../service/project";
 
 export const getTeamsController = async(req: AuthRequest, res: AuthResponse) => {
@@ -78,6 +78,32 @@ export const getTeamByProjectController = async(req: AuthRequest, res: AuthRespo
     const { id_project } = req.params;
     const teamRepository = new TeamRepositorySequelize();
     const teams = await findTeamByProject(parseInt(id_project), teamRepository);
+    res.status(200).json(teams);
+  } catch (err: any) {
+    res.status(400).json(err.message);
+  }
+  return;
+};
+
+export const getTeamByUserController = async(req: AuthRequest, res: AuthResponse) => {
+  try {
+    if (!req.params.id_user) {
+      res.status(400).json("No id_project parameter");
+      return;
+    }
+
+    let { id_user } = req.params;
+    if (id_user == "me"){
+      id_user = req.user.userId;
+    }
+    const { userId: id_user_request, role: role_user_request } = req.user;
+    const roleHelper = new RoleHelperBinary();
+    if (parseInt(id_user) !== id_user_request || !roleHelper.isAdmin(role_user_request)) {
+      res.status(401).json("This user has no privileges to proceed with this action");
+      return;
+    }
+    const teamRepository = new TeamRepositorySequelize();
+    const teams = await findTeamsByUser(parseInt(id_user), teamRepository);
     res.status(200).json(teams);
   } catch (err: any) {
     res.status(400).json(err.message);

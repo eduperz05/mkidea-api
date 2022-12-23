@@ -80,4 +80,22 @@ export const updateUser = async(userId: number, userToUpdate: any, userRepositor
   await userRepository.update(userId, userToUpdate);
 };
 
+export const updatePassword = async(userId: number, passwordToUpdate: any, userRepository: UserRepository, passwordHelper: PasswordHelper) => {
+  const user = await userRepository.findByPk(userId);
+  if (!user) {
+    throw new Error("User not found.");
+  }
+  let userJsoned = user.toJSON();
+  const pass = userJsoned.password;
+  console.log(pass);
+  const isPasswordCorrect = passwordHelper.compare(passwordToUpdate.currentPassword, pass);
+  if (!isPasswordCorrect) {
+    throw new Error("The old password is not correct.");
+  }
+  const newPassword = passwordHelper.encrypt(passwordToUpdate.newPassword);
+  if (!newPassword) {
+    throw new Error("The new password is not valid.");
+  }
+  await userRepository.update(userId, { password: newPassword });
+};
 

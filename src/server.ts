@@ -14,10 +14,14 @@ import { teamRouterPublic } from "./API/routes/teamPublic";
 import { newsRouterPublic } from "./API/routes/newsPublic";
 import { authSession } from "./API/middlewares/auth-session";
 import { authAdmin } from "./API/middlewares/auth-admin";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const corsOptions = {
   origin: "http://localhost:5173",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type, Origin, Accept, Authorization",
   optionSuccessStatus: 200,
   credentials: true,
 };
@@ -26,6 +30,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
 app.get("/", (req, res) => {
   res.send("MKIdea API!");
 });
