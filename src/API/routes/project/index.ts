@@ -7,7 +7,7 @@ export const projectRouter = Router();
 
 projectRouter.get("/", [authAdmin], getProjectsController);
 projectRouter.get("/:id_project", getProjectController);
-projectRouter.get("/owner/:id_owner", [authAdmin],getProjectsByOwnerController);
+projectRouter.get("/owner/:id_owner",getProjectsByOwnerController);
 projectRouter.get("/name/:name", [authAdmin], getProjectByNameController); 
 projectRouter.get("/status/:status", [authAdmin], getProjectsByStatusController);
 projectRouter.post("/", [authOwner], postProjectController);
