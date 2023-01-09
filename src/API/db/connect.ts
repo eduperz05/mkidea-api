@@ -8,7 +8,6 @@ const modeDB = process.env.MODE_DB === "alter"
 
 export const dbConnect = async() => {
   await dbCheck();
-  //alter
   await connection.sync(modeDB).then(() => {
     console.log("Connected to database");
   }).catch((err) => {

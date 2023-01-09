@@ -5,8 +5,6 @@ import { RoleHelperBinary } from "../../../utils/roleHelper";
 import { validateEmail } from "../../../utils/validateEmail";
 import { findUsers, findUser, findUserByUsername, createUser, deleteUser, updateUser, findUserByEmail, updatePassword } from "../../../service/user";
 
-// TODO: Preguntar a raul sobre como evitar enviar informacion sensible al cliente
-
 export const getUsersController = async(req: AuthRequest, res: AuthResponse) => {
   try {
     const userRepository = new UserRepositorySequelize();
