@@ -36,7 +36,6 @@ app.get("/", (req, res) => {
   res.send("MKIdea API!");
 });
 
-// app.use(middlewareAuth);
 app.use("/auth", authRouter);
 app.use("/public/user", userRouterPublic);
 app.use("/public/project", projectRouterPublic);

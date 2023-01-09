@@ -5,7 +5,3 @@ export const userRouterPublic = Router();
 
 userRouterPublic.get("/", getUsersPublicController);
 userRouterPublic.get("/:id_user", getUserPublicController);
-
-
-// http://localhost:3000/user
-// http://app.mkidea.tech/user/:"id"

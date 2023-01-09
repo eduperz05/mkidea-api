@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-// import * as dotenv from "dotenv";
-// dotenv.config();
 
 export interface TokenHelper {
   generate(userId: number, role: number): Promise<string>;

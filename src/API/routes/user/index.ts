@@ -12,6 +12,3 @@ userRouter.post("/", [authAdmin], postUserController);
 userRouter.delete("/:id_user", deleteUserController);
 userRouter.patch("/:id_user", changeUserController);
 userRouter.patch("/changePassword/:id_user", changePasswordController);
-
-// http://localhost:3000/user
-// http://app.mkidea.tech/user/:"id"
